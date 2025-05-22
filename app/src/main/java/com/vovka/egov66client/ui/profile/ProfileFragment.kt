@@ -23,6 +23,7 @@ import com.vovka.egov66client.ui.schedule.ScheduleViewModel.Companion.initialSta
 import com.vovka.egov66client.ui.schedule.ScheduleViewModel.State
 import com.vovka.egov66client.ui.schedule.day.adapter.DayAdapter
 import com.vovka.egov66client.utils.collectWhenStarted
+import com.vovka.egov66client.utils.visibleOrGone
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -53,6 +54,8 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     private fun subscribe() {
         viewModel.state.collectWhenStarted(this) { state ->
+            binding.exitButton.visibleOrGone(state !is ProfileViewModel.State.Loading)
+            binding.progressBar.visibleOrGone(state is ProfileViewModel.State.Loading)
             when(state){
                 is ProfileViewModel.State.Loading -> {
 
@@ -60,6 +63,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 is ProfileViewModel.State.Show -> {
                     binding.name.text = state.lastName+" " + state.firstName +" " + state.surName
                     binding.orgname.text = state.orgName
+                    binding.classname.text = state.className
                     if (!state.avatarId.isNullOrBlank()){
                         //TODO Load photo
                     }else{
@@ -73,13 +77,13 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             when(action) {
                 ProfileViewModel.Action.OpenExit -> {
                     AlertDialog.Builder(requireActivity())
-                        .setTitle("Диалоговое окно")
-                        .setMessage("Выберите действие")
+                        .setTitle("Выход")
+                        .setMessage("Вы действительно хотите выйти из аккаунта")
                         .setPositiveButton("Да") { dialog, which ->
                             viewModel.logout()
                             findNavController().navigate(R.id.navigation_login,null)
                         }
-                        .setNegativeButton("Нет") { dialog, which ->
+                        .setNeutralButton("Нет") { dialog, which ->
                             // Действие при нажатии "Нет"
                             println("Нажата кнопка Нет")
                         }

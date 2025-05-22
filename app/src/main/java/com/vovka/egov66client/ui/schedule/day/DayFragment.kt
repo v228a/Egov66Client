@@ -15,7 +15,10 @@ import com.vovka.egov66client.R
 import com.vovka.egov66client.databinding.FragmentDayBinding
 import com.vovka.egov66client.domain.schedule.entity.DayScheduleEntity
 import com.vovka.egov66client.domain.schedule.entity.LessonEntity
+import com.vovka.egov66client.ui.login.LoginViewModel
 import com.vovka.egov66client.ui.schedule.day.adapter.LessonAdapter
+import com.vovka.egov66client.utils.collectWhenStarted
+import com.vovka.egov66client.utils.visibleOrGone
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -30,35 +33,49 @@ class DayFragment : Fragment(R.layout.fragment_day) {
     private var _binding: FragmentDayBinding? = null
     private val binding: FragmentDayBinding get() = _binding!!
 
+    private val viewModel: DayViewModel by viewModels()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentDayBinding.bind(view)
         viewPager = requireActivity().findViewById(R.id.scheduleViewPager)
+        initCallback()
+        subscribe()
+    }
 
-        val btnPrevious = view.findViewById<ImageButton>(R.id.btnPrevious)
-        val btnNext = view.findViewById<ImageButton>(R.id.btnNext)
 
+
+    private fun initCallback(){
         lessons?.let { daySchedule ->
             binding.dateTextView.text = daySchedule.date
-            setupRecyclerView(daySchedule.lessons)
+            lessonAdapter = LessonAdapter()
+            binding.scheduleRecyclerView.apply {
+                layoutManager = LinearLayoutManager(context)
+                adapter = lessonAdapter
+            }
+            lessonAdapter.submitList(daySchedule.lessons)
         }
 
-        btnPrevious.setOnClickListener {
+        binding.btnPrevious.setOnClickListener {
             viewPager.currentItem = viewPager.currentItem - 1
         }
 
-        btnNext.setOnClickListener {
+        binding.btnNext.setOnClickListener {
             viewPager.currentItem = viewPager.currentItem + 1
         }
     }
 
-    private fun setupRecyclerView(lessons: List<LessonEntity>) {
-        lessonAdapter = LessonAdapter()
-        binding.scheduleRecyclerView.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = lessonAdapter
+    private fun subscribe(){
+        viewModel.state.collectWhenStarted(this) { state ->
+//            binding.progressBar.visibleOrGone(state is DayViewModel.State.Loading)
+//            when(state){
+//                DayViewModel.State.Loading -> {
+//                    binding.scheduleRecyclerView.visibility = View.GONE
+//                    binding.progressBar.visibility = View.VISIBLE
+//                }
+//            }
         }
-        lessonAdapter.submitList(lessons)
+
     }
 
     override fun onDestroyView() {

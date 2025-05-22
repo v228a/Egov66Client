@@ -1,14 +1,22 @@
 package com.vovka.egov66client.ui.schedule.day
 
 import androidx.lifecycle.ViewModel
+import com.vovka.egov66client.utils.MutablePublishFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 
 @HiltViewModel
 class DayViewModel @Inject constructor() : ViewModel() {
 
+    private val _action = MutablePublishFlow<Action>()
+    val action = _action.asSharedFlow()
 
+    private val _state = MutableStateFlow<State>(initialState)
+    val state = _state.asStateFlow()
 
 
 
@@ -18,5 +26,9 @@ class DayViewModel @Inject constructor() : ViewModel() {
 
     sealed interface Action {
 
+    }
+
+    companion object{
+        val initialState = State.Loading
     }
 }
