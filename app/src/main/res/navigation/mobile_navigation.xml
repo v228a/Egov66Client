@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/navigation_login">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.vovka.egov66client.ui.schedule.ScheduleFragment"
+        android:label="Расписание"
+        tools:layout="@layout/fragment_schedule" />
+
+    <fragment
+        android:id="@+id/navigation_login"
+        android:name="com.vovka.egov66client.ui.login.LoginFragment"
+        android:label="Вход"
+        tools:layout="@layout/fragment_login"/>
+
+    <fragment
+        android:id="@+id/navigation_grades"
+        android:name="com.vovka.egov66client.ui.grades.GradesFragment"
+        android:label="Оценки"
+        tools:layout="@layout/fragment_grades" />
+
+    <fragment
+        android:id="@+id/navigation_homework"
+        android:name="com.vovka.egov66client.ui.homework.HomeworkFragment"
+        android:label="Домашка"
+        tools:layout="@layout/fragment_homework" />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.vovka.egov66client.ui.profile.ProfileFragment"
+        android:label="Профиль"
+        tools:layout="@layout/fragment_profile" />
+</navigation>
