@@ -1,5 +1,6 @@
 package com.vovka.egov66client.ui.login
 
+import android.graphics.Bitmap
 import androidx.fragment.app.viewModels
 import android.os.Bundle
 import android.util.Log
@@ -52,9 +53,12 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         }
 
         binding.webview.webViewClient = object : WebViewClient() {
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                super.onPageStarted(view, url, favicon)
+                checkForLocalStorage()
+            }
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
-                Log.d("LoginFragment", "Page finished loading: $url")
                 checkForLocalStorage()
                 //TODO При первой загрузке не перекидывает в меню, если перезайти то перекинет куда надо
             }

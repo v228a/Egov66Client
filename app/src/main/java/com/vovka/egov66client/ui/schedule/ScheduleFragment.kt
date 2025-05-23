@@ -59,7 +59,9 @@ class ScheduleFragment : Fragment(R.layout.fragment_schedule) {
         viewModel.state.collectWhenStarted(this) { state ->
             binding.progressBar.visibleOrGone(state is ScheduleViewModel.State.Loading)
                 when(state){
-                    is ScheduleViewModel.State.Error -> {}
+                    is ScheduleViewModel.State.Error -> {
+
+                    }
 
                     is ScheduleViewModel.State.Loading -> {
 

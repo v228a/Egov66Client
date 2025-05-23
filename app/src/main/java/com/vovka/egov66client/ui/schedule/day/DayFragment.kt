@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -47,13 +48,19 @@ class DayFragment : Fragment(R.layout.fragment_day) {
 
     private fun initCallback(){
         lessons?.let { daySchedule ->
-            binding.dateTextView.text = daySchedule.date
-            lessonAdapter = LessonAdapter()
-            binding.scheduleRecyclerView.apply {
-                layoutManager = LinearLayoutManager(context)
-                adapter = lessonAdapter
+            if (daySchedule.isWeekend){ viewModel.showTextHoliday()}
+            else if (daySchedule.isCelebration){ viewModel.showTextCelebration()}
+            else if(daySchedule.lessons.isEmpty()){viewModel.showTextNoLessons()}
+            else{
+                binding.dateTextView.text = daySchedule.date
+                lessonAdapter = LessonAdapter()
+                binding.scheduleRecyclerView.apply {
+                    layoutManager = LinearLayoutManager(context)
+                    adapter = lessonAdapter
+                }
+                lessonAdapter.submitList(daySchedule.lessons)
             }
-            lessonAdapter.submitList(daySchedule.lessons)
+
         }
 
         binding.btnPrevious.setOnClickListener {
@@ -63,6 +70,7 @@ class DayFragment : Fragment(R.layout.fragment_day) {
         binding.btnNext.setOnClickListener {
             viewPager.currentItem = viewPager.currentItem + 1
         }
+
     }
 
     private fun subscribe(){
@@ -74,6 +82,21 @@ class DayFragment : Fragment(R.layout.fragment_day) {
 //                    binding.progressBar.visibility = View.VISIBLE
 //                }
 //            }
+        }
+        viewModel.action.collectWhenStarted(this){action ->
+            when(action) {
+                DayViewModel.Action.ShowTextCelebration -> {
+                    binding.exceptionTextView.text = "Сегодня выходной"
+                }
+                DayViewModel.Action.ShowTextHoliday -> {
+                    binding.exceptionTextView.text = "Сегодня праздник"
+                    //TODO Добавить картиночку
+                }
+
+                DayViewModel.Action.ShowTextNoLessons -> {
+                    binding.exceptionTextView.text = "Сегодня нету уроков"
+                }
+            }
         }
 
     }
