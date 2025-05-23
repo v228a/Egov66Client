@@ -67,6 +67,11 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 super.onReceivedError(view, errorCode, description, failingUrl)
                 Log.e("LoginFragment", "WebView error: $description")
             }
+
+            override fun doUpdateVisitedHistory(view: WebView?, url: String?, isReload: Boolean) {
+                super.doUpdateVisitedHistory(view, url, isReload)
+                checkForLocalStorage()
+            }
         }
 
         binding.webview.loadUrl("https://dnevnik.egov66.ru/")
