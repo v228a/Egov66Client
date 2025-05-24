@@ -7,15 +7,15 @@
         android:icon="@drawable/ic_home_black_24dp"
         android:title="Расписание" />
 
-<!--    <item-->
-<!--        android:id="@+id/navigation_grades"-->
-<!--        android:icon="@drawable/ic_dashboard_black_24dp"-->
-<!--        android:title="@string/title_dashboard" />-->
+    <item
+        android:id="@+id/navigation_grades"
+        android:icon="@drawable/ic_ratings"
+        android:title="Оценки" />
 
-<!--    <item-->
-<!--        android:id="@+id/navigation_homework"-->
-<!--        android:icon="@drawable/ic_done"-->
-<!--        android:title="@string/title_notifications" />-->
+    <item
+        android:id="@+id/navigation_homework"
+        android:icon="@drawable/ic_done"
+        android:title="Домашка" />
     <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/ic_person"

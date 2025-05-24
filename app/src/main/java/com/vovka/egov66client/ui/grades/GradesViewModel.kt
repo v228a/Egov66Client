@@ -10,7 +10,7 @@ import javax.inject.Inject
 class GradesViewModel @Inject constructor() : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is dashboard Fragment"
+        value = "Здесь будут оценки"
     }
     val text: LiveData<String> = _text
 }

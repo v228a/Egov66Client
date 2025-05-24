@@ -19,8 +19,8 @@ class DayViewModel @Inject constructor() : ViewModel() {
     private val _action = MutablePublishFlow<Action>()
     val action = _action.asSharedFlow()
 
-    private val _state = MutableStateFlow<State>(initialState)
-    val state = _state.asStateFlow()
+//    private val _state = MutableStateFlow<State>(initialState)
+//    val state = _state.asStateFlow()
 
     fun showTextHoliday(){
         viewModelScope.launch {
@@ -40,9 +40,10 @@ class DayViewModel @Inject constructor() : ViewModel() {
 
 
 
-    sealed interface State {
-        data object Loading : State
-    }
+
+//    sealed interface State {
+//        data object Loading : State
+//    }
 
     sealed interface Action {
         data object ShowTextHoliday: Action
@@ -51,7 +52,7 @@ class DayViewModel @Inject constructor() : ViewModel() {
 
     }
 
-    companion object{
-        val initialState = State.Loading
-    }
+//    companion object{
+//        val initialState = State.Loading
+//    }
 }

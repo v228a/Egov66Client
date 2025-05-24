@@ -1,29 +1,22 @@
 package com.vovka.egov66client.ui.schedule.day
 
-import androidx.fragment.app.viewModels
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.TextView
-import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AlertDialog.*
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.vovka.egov66client.R
 import com.vovka.egov66client.databinding.FragmentDayBinding
 import com.vovka.egov66client.domain.schedule.entity.DayScheduleEntity
-import com.vovka.egov66client.domain.schedule.entity.LessonEntity
-import com.vovka.egov66client.ui.login.LoginViewModel
+import com.vovka.egov66client.ui.profile.ProfileViewModel
 import com.vovka.egov66client.ui.schedule.day.adapter.LessonAdapter
 import com.vovka.egov66client.utils.collectWhenStarted
-import com.vovka.egov66client.utils.visibleOrGone
 import dagger.hilt.android.AndroidEntryPoint
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 @AndroidEntryPoint
 class DayFragment : Fragment(R.layout.fragment_day) {
@@ -51,9 +44,18 @@ class DayFragment : Fragment(R.layout.fragment_day) {
         lessons?.let { daySchedule ->
             binding.dateTextView.text = daySchedule.date
             //viewmodel не работает(
-            if (daySchedule.isWeekend){ viewModel.showTextHoliday()}
-            else if (daySchedule.isCelebration){ viewModel.showTextCelebration()}
-            else if(daySchedule.lessons.isEmpty()){ viewModel.showTextNoLessons()}
+            if (daySchedule.isWeekend){
+//                viewModel.showTextHoliday()
+                binding.exceptionTextView.text = "Выходной день"
+            }
+            else if (daySchedule.isCelebration){
+//                viewModel.showTextCelebration()
+                binding.exceptionTextView.text = "С праздником"
+            }
+            else if(daySchedule.lessons.isEmpty()){
+//                viewModel.showTextNoLessons()
+                binding.exceptionTextView.text = "Сегодня уроков нет"
+            }
             else{
                 lessonAdapter = LessonAdapter()
                 binding.scheduleRecyclerView.apply {
@@ -76,26 +78,12 @@ class DayFragment : Fragment(R.layout.fragment_day) {
     }
 
     private fun subscribe(){
-        viewModel.state.collectWhenStarted(this) { state ->
-//            binding.progressBar.visibleOrGone(state is DayViewModel.State.Loading)
-//            when(state){
-//                DayViewModel.State.Loading -> {
-//                    binding.scheduleRecyclerView.visibility = View.GONE
-//                    binding.progressBar.visibility = View.VISIBLE
-//                }
-//            }
-        }
-        viewModel.action.collectWhenStarted(this){action ->
+        viewModel.action.collectWhenStarted(this) { action ->
             when(action) {
-                DayViewModel.Action.ShowTextCelebration -> {
-                    binding.exceptionTextView.text = "Сегодня выходной"
-                }
-                DayViewModel.Action.ShowTextHoliday -> {
-                    binding.exceptionTextView.text = "Сегодня праздник"
-                    //TODO Добавить картиночку
-                }
+                DayViewModel.Action.ShowTextCelebration -> TODO()
+                DayViewModel.Action.ShowTextHoliday -> TODO()
                 DayViewModel.Action.ShowTextNoLessons -> {
-                    binding.exceptionTextView.text = "Сегодня нету уроков"
+//                    Log.d("f","adsfadf")
                 }
             }
         }

@@ -16,7 +16,6 @@ import javax.inject.Inject
 
 @Reusable
 class ScheduleRepositoryImpl @Inject constructor(
-    private val accountNetworkDataSource: Lazy<AccountNetworkDataSource>,
     private val scheduleNetworkDataSource: ScheduleNetworkDataSource,
     private val studentStorageDataSource: Lazy<StudentStorageDataSource>,
     private val weekScheduleMapper: Lazy<WeekScheduleMapper>

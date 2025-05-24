@@ -15,7 +15,7 @@ class HomeWorkNetworkDataSource @Inject constructor(
         retrofit.create(HomeWorkApi::class.java)
     }
 
-    suspend fun getStudents(Aiss2Auth: String, studentId: String, date: String): Result<HomeWorkResponse> {
+    suspend fun getHomework(Aiss2Auth: String, studentId: String, date: String): Result<HomeWorkResponse> {
         return kotlin.runCatching { api.getHomeWork(
             Aiss2Auth = Aiss2Auth,
             studentId = studentId,

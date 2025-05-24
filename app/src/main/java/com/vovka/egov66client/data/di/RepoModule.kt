@@ -1,7 +1,9 @@
 package com.vovka.egov66client.data.di
 
+import com.vovka.egov66client.data.repo.HomeWorkRepositoryImpl
 import com.vovka.egov66client.data.repo.ScheduleRepositoryImpl
 import com.vovka.egov66client.data.repo.StudentRepositoryImpl
+import com.vovka.egov66client.domain.homework.repo.HomeWorkRepository
 import com.vovka.egov66client.domain.schedule.repo.ScheduleRepository
 import com.vovka.egov66client.domain.student.repo.StudentRepository
 import dagger.Binds
@@ -22,6 +24,11 @@ abstract class RepoModule {
     abstract fun bindStudentRepo(
         impl: StudentRepositoryImpl
     ): StudentRepository
+
+    @Binds
+    abstract fun bindHomeWorkRepo(
+        impl: HomeWorkRepositoryImpl
+    ): HomeWorkRepository
 
     @Binds
     abstract fun bindScheduleRepo(
