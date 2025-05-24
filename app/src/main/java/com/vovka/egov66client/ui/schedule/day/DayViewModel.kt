@@ -1,5 +1,6 @@
 package com.vovka.egov66client.ui.schedule.day
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vovka.egov66client.ui.profile.ProfileViewModel

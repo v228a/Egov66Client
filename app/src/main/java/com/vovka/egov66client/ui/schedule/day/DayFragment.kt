@@ -2,6 +2,7 @@ package com.vovka.egov66client.ui.schedule.day
 
 import androidx.fragment.app.viewModels
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -48,11 +49,12 @@ class DayFragment : Fragment(R.layout.fragment_day) {
 
     private fun initCallback(){
         lessons?.let { daySchedule ->
+            binding.dateTextView.text = daySchedule.date
+            //viewmodel не работает(
             if (daySchedule.isWeekend){ viewModel.showTextHoliday()}
             else if (daySchedule.isCelebration){ viewModel.showTextCelebration()}
-            else if(daySchedule.lessons.isEmpty()){viewModel.showTextNoLessons()}
+            else if(daySchedule.lessons.isEmpty()){ viewModel.showTextNoLessons()}
             else{
-                binding.dateTextView.text = daySchedule.date
                 lessonAdapter = LessonAdapter()
                 binding.scheduleRecyclerView.apply {
                     layoutManager = LinearLayoutManager(context)
@@ -92,7 +94,6 @@ class DayFragment : Fragment(R.layout.fragment_day) {
                     binding.exceptionTextView.text = "Сегодня праздник"
                     //TODO Добавить картиночку
                 }
-
                 DayViewModel.Action.ShowTextNoLessons -> {
                     binding.exceptionTextView.text = "Сегодня нету уроков"
                 }

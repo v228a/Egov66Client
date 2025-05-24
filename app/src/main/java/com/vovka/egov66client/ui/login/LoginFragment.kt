@@ -60,7 +60,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
                 checkForLocalStorage()
-                //TODO При первой загрузке не перекидывает в меню, если перезайти то перекинет куда надо
             }
 
             override fun onReceivedError(view: WebView?, errorCode: Int, description: String?, failingUrl: String?) {
