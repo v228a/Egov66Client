@@ -16,14 +16,10 @@ class ScheduleNetworkDataSource @Inject constructor(
     }
 
     suspend fun getSchedule(Aiss2Auth: String, StudentId: String): Result<ScheduleResponse> {
-
         return runCatching {api.getSchedule(Aiss2Auth,StudentId)}
-
     }
-    suspend fun getScheduleOnCurrentWeek(weekNumber: Int): Result<ScheduleResponse>{
-        return kotlin.runCatching {
-            mockdata
-        }
+    suspend fun getScheduleOnCurrentWeek(Aiss2Auth: String, StudentId: String,weekNumber: Int): Result<ScheduleResponse>{
+        return runCatching {api.getScheduleOnCurrentWeek(Aiss2Auth,StudentId,weekNumber)}
     }
 
 }
