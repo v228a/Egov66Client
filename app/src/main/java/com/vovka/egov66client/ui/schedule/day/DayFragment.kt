@@ -42,6 +42,7 @@ class DayFragment : Fragment(R.layout.fragment_day) {
 
     private fun initCallback(){
         lessons?.let { daySchedule ->
+            Log.d("Day",daySchedule.date)
             binding.dateTextView.text = daySchedule.date
             //viewmodel не работает(
             if (daySchedule.isWeekend){
