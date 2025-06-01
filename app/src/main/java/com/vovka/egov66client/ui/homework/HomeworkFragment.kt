@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.vovka.egov66client.R
 import com.vovka.egov66client.databinding.FragmentHomeworkBinding
 import com.vovka.egov66client.databinding.FragmentScheduleBinding
+import com.vovka.egov66client.ui.homework.day.HomeWorkDayAdapter
 import com.vovka.egov66client.ui.schedule.ScheduleViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.getValue
@@ -33,7 +34,10 @@ class HomeworkFragment : Fragment(R.layout.fragment_homework) {
     }
 
     private fun subscribe() {
-
+        val adapter = HomeWorkDayAdapter(requireActivity())
+        binding.viewPager.adapter = adapter
+        // Устанавливаем начальную позицию для бесконечной прокрутки
+        binding.viewPager.setCurrentItem(adapter.getStartPosition(), false)
     }
 
     private fun initCallback(){
