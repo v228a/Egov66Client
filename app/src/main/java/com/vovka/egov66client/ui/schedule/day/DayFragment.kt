@@ -1,24 +1,22 @@
 package com.vovka.egov66client.ui.schedule.day
 
-import androidx.fragment.app.viewModels
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AlertDialog.*
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.vovka.egov66client.R
 import com.vovka.egov66client.databinding.FragmentDayBinding
 import com.vovka.egov66client.domain.schedule.entity.DayScheduleEntity
-import com.vovka.egov66client.domain.schedule.entity.LessonEntity
+import com.vovka.egov66client.ui.profile.ProfileViewModel
 import com.vovka.egov66client.ui.schedule.day.adapter.LessonAdapter
+import com.vovka.egov66client.utils.collectWhenStarted
 import dagger.hilt.android.AndroidEntryPoint
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 @AndroidEntryPoint
 class DayFragment : Fragment(R.layout.fragment_day) {
@@ -30,35 +28,67 @@ class DayFragment : Fragment(R.layout.fragment_day) {
     private var _binding: FragmentDayBinding? = null
     private val binding: FragmentDayBinding get() = _binding!!
 
+    private val viewModel: DayViewModel by viewModels()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentDayBinding.bind(view)
         viewPager = requireActivity().findViewById(R.id.scheduleViewPager)
+        initCallback()
+        subscribe()
+    }
 
-        val btnPrevious = view.findViewById<ImageButton>(R.id.btnPrevious)
-        val btnNext = view.findViewById<ImageButton>(R.id.btnNext)
 
+
+    private fun initCallback(){
         lessons?.let { daySchedule ->
+            Log.d("Day",daySchedule.date)
             binding.dateTextView.text = daySchedule.date
-            setupRecyclerView(daySchedule.lessons)
+            //viewmodel не работает(
+            if (daySchedule.isWeekend){
+//                viewModel.showTextHoliday()
+                binding.exceptionTextView.text = "Выходной день"
+            }
+            else if (daySchedule.isCelebration){
+//                viewModel.showTextCelebration()
+                binding.exceptionTextView.text = "С праздником"
+            }
+            else if(daySchedule.lessons.isEmpty()){
+//                viewModel.showTextNoLessons()
+                binding.exceptionTextView.text = "Сегодня уроков нет"
+            }
+            else{
+                lessonAdapter = LessonAdapter()
+                binding.scheduleRecyclerView.apply {
+                    layoutManager = LinearLayoutManager(context)
+                    adapter = lessonAdapter
+                }
+                lessonAdapter.submitList(daySchedule.lessons)
+            }
+
         }
 
-        btnPrevious.setOnClickListener {
+        binding.btnPrevious.setOnClickListener {
             viewPager.currentItem = viewPager.currentItem - 1
         }
 
-        btnNext.setOnClickListener {
+        binding.btnNext.setOnClickListener {
             viewPager.currentItem = viewPager.currentItem + 1
         }
+
     }
 
-    private fun setupRecyclerView(lessons: List<LessonEntity>) {
-        lessonAdapter = LessonAdapter()
-        binding.scheduleRecyclerView.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = lessonAdapter
+    private fun subscribe(){
+        viewModel.action.collectWhenStarted(this) { action ->
+            when(action) {
+                DayViewModel.Action.ShowTextCelebration -> TODO()
+                DayViewModel.Action.ShowTextHoliday -> TODO()
+                DayViewModel.Action.ShowTextNoLessons -> {
+//                    Log.d("f","adsfadf")
+                }
+            }
         }
-        lessonAdapter.submitList(lessons)
+
     }
 
     override fun onDestroyView() {

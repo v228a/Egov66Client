@@ -26,10 +26,17 @@ class WeekScheduleMapper @Inject constructor() {
                     val lessonText = buildString {
                         append(lesson.lessonName)
                     }
+
                     val room = buildString { append(lesson.room) }
                     LessonEntity(time, lessonText, room )
                 }
-                DayScheduleEntity(formatDate(day.date), lessons)
+                DayScheduleEntity(
+                    lessons = lessons,
+                    date = formatDate(day.date),
+                    isCelebration = day.isCelebration,
+                    isWeekend = day.isWeekend
+
+                )
             }
 
             WeekScheduleEntity(

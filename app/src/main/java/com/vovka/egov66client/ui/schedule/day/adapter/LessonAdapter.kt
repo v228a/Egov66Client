@@ -28,6 +28,7 @@ class LessonAdapter : ListAdapter<LessonEntity, LessonAdapter.LessonViewHolder>(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(lesson: LessonEntity) {
+            binding.numberTextView.text = (adapterPosition+1).toString() + "."
             binding.timeTextView.text = lesson.time
             binding.lessonTextView.text = lesson.lesson
             binding.teacherTextView.text= lesson.room

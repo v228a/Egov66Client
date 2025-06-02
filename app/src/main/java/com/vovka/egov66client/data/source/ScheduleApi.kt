@@ -14,4 +14,14 @@ interface ScheduleApi {
         @Header("Accept") accept: String = "*/*",
         @Header("Accept-Encoding") acceptEncoding: String = "gzip, deflate, br"
     ): ScheduleResponse
+
+    @GET("/api/schedule")
+    suspend fun getScheduleOnCurrentWeek(
+        @Header("Authorization") Aiss2Auth: String,
+        @Query("studentId") studentId: String,
+        @Query("pageNumber") pageNumber: Int,
+        @Header("User-Agent") userAgent: String = "Mozilla/5.0",
+        @Header("Accept") accept: String = "*/*",
+        @Header("Accept-Encoding") acceptEncoding: String = "gzip, deflate, br"
+    ): ScheduleResponse
 }

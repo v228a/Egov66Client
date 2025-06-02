@@ -1,5 +1,6 @@
 package com.vovka.egov66client.ui.login
 
+import android.graphics.Bitmap
 import androidx.fragment.app.viewModels
 import android.os.Bundle
 import android.util.Log
@@ -52,15 +53,23 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         }
 
         binding.webview.webViewClient = object : WebViewClient() {
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                super.onPageStarted(view, url, favicon)
+                checkForLocalStorage()
+            }
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
-                Log.d("LoginFragment", "Page finished loading: $url")
                 checkForLocalStorage()
             }
 
             override fun onReceivedError(view: WebView?, errorCode: Int, description: String?, failingUrl: String?) {
                 super.onReceivedError(view, errorCode, description, failingUrl)
                 Log.e("LoginFragment", "WebView error: $description")
+            }
+
+            override fun doUpdateVisitedHistory(view: WebView?, url: String?, isReload: Boolean) {
+                super.doUpdateVisitedHistory(view, url, isReload)
+                checkForLocalStorage()
             }
         }
 

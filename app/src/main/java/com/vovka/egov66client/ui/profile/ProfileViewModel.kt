@@ -64,6 +64,7 @@ class ProfileViewModel @Inject constructor(
 
     fun updateStudentInfo(){
         viewModelScope.launch {
+            _state.update { State.Loading }
             getStudentInfoUseCase.invoke().fold(
                 onSuccess = { value ->
                     _state.update {

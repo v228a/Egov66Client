@@ -16,7 +16,6 @@ import javax.inject.Inject
 
 @Reusable
 class ScheduleRepositoryImpl @Inject constructor(
-    private val accountNetworkDataSource: Lazy<AccountNetworkDataSource>,
     private val scheduleNetworkDataSource: ScheduleNetworkDataSource,
     private val studentStorageDataSource: Lazy<StudentStorageDataSource>,
     private val weekScheduleMapper: Lazy<WeekScheduleMapper>
@@ -35,6 +34,28 @@ class ScheduleRepositoryImpl @Inject constructor(
             scheduleNetworkDataSource.getSchedule(
                 Aiss2Auth = "Bearer $authToken",
                 StudentId = studentId
+            ).fold(
+                onSuccess = { value -> weekScheduleMapper.get().invoke(value) },
+                onFailure = { error -> Result.failure(error) }
+            )
+        }
+    }
+
+    override suspend fun getWeekNumberSchedule(weekNumber: Int): Result<WeekScheduleEntity> {
+        return withContext(Dispatchers.IO) {
+            val authToken = studentStorageDataSource.get().aiss2Auth.first()
+            if (authToken == null) {
+                return@withContext Result.failure(Exception("Auth token not found"))
+            }
+            val studentId = studentStorageDataSource.get().studentId.first()
+            if (studentId == null) {
+                return@withContext Result.failure(Exception("StudentId not found"))
+            }
+
+            scheduleNetworkDataSource.getScheduleOnCurrentWeek(
+                Aiss2Auth = "Bearer $authToken",
+                StudentId = studentId,
+                weekNumber = weekNumber
             ).fold(
                 onSuccess = { value -> weekScheduleMapper.get().invoke(value) },
                 onFailure = { error -> Result.failure(error) }
