@@ -36,13 +36,10 @@ class HomeworkFragment : Fragment(R.layout.fragment_homework) {
     private fun subscribe() {
         val adapter = HomeWorkDayAdapter(requireActivity())
         binding.viewPager.adapter = adapter
-        // Устанавливаем начальную позицию для бесконечной прокрутки
         binding.viewPager.setCurrentItem(adapter.getStartPosition(), false)
     }
 
-    private fun initCallback(){
-
-    }
+    private fun initCallback(){}
 
 
     override fun onDestroyView() {

@@ -1,58 +1,81 @@
 package com.vovka.egov66client.ui.homework.day
 
-import androidx.fragment.app.viewModels
+
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.vovka.egov66client.R
 import com.vovka.egov66client.databinding.FragmentHomeWorkDayBinding
-import com.vovka.egov66client.databinding.FragmentScheduleBinding
+import com.vovka.egov66client.databinding.FragmentLoginBinding
+import com.vovka.egov66client.domain.schedule.entity.DayScheduleEntity
+import com.vovka.egov66client.ui.homework.HomeworkViewModel
+import com.vovka.egov66client.ui.profile.ProfileViewModel
+import com.vovka.egov66client.ui.schedule.day.DayFragment
+import com.vovka.egov66client.utils.collectWhenStarted
+import com.vovka.egov66client.utils.visibleOrGone
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.util.Date
 import java.util.Locale
+import kotlin.getValue
 
-class HomeWorkDayFragment : Fragment() {
-    private var date: Date? = null
-    private lateinit var dateTextView: TextView
-    private val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+@AndroidEntryPoint
+class HomeWorkDayFragment : Fragment(R.layout.fragment_home_work_day) {
+
+    private var date: LocalDateTime? = null
 
     private var _binding: FragmentHomeWorkDayBinding? = null
     private val binding: FragmentHomeWorkDayBinding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            date = it.getSerializable(ARG_DATE) as Date
-        }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_home_work_day, container, false)
-    }
+    private val viewModel: HomeWorkDayViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dateTextView = view.findViewById(R.id.dateTextView)
-        date?.let { dateTextView.text = dateFormat.format(it) }
+        _binding = FragmentHomeWorkDayBinding.bind(view)
+        initCallback()
+        subscribe()
+    }
+
+
+    private fun subscribe() {
+        viewModel.state.collectWhenStarted(this) { state ->
+            binding.progressBar.visibleOrGone(state is HomeWorkDayViewModel.State.Loading)
+            when(state){
+                is HomeWorkDayViewModel.State.Loading -> {
+
+                }
+                is HomeWorkDayViewModel.State.Show -> {
+                    binding.homeworkRecycler.adapter = HomeWorkDayRecyclerAdapter(state.homeworks.homework)
+                    //TODO если нету домашек
+                }
+
+                HomeWorkDayViewModel.State.Error -> {
+
+                }
+            }
+        }
 
     }
 
-    companion object {
-        private const val ARG_DATE = "arg_date"
+    private fun initCallback(){
+        viewModel.updateHomeWork(date!!)
+        binding.homeworkRecycler.layoutManager = LinearLayoutManager(requireActivity())
+        binding.dateTextView.text = date?.let { 
+            SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(Date.from(it.toInstant(ZoneOffset.UTC)))
+        }
+    }
 
-        fun newInstance(date: Date): HomeWorkDayFragment {
-            return HomeWorkDayFragment().apply {
-                arguments = Bundle().apply {
-                    putSerializable(ARG_DATE, date)
-                }
-            }
+    companion object {
+
+        fun newInstance(date: LocalDateTime): HomeWorkDayFragment {
+            val fragment = HomeWorkDayFragment()
+            fragment.date = date
+            return fragment
         }
     }
 }

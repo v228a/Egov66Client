@@ -36,8 +36,8 @@ class HomeWorkRepositoryImpl @Inject constructor(
     override suspend fun getHomework(date: LocalDateTime): Result<DayHomeWorkEntity> {
         return withContext(Dispatchers.IO) {
             homeWorkNetworkDataSource.get().getHomework(
-            Aiss2Auth = studentStorageDataSource.get().aiss2Auth.toString(),
-            studentId = studentStorageDataSource.get().studentId.toString(),
+            Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
+            studentId = studentStorageDataSource.get().studentId.first().toString(),
             date = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         ).fold(
             onSuccess = { value -> homeWorkMapper.get().invoke(value) },

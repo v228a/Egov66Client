@@ -5,11 +5,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.vovka.egov66client.R
 import com.vovka.egov66client.domain.schedule.GetScheduleCurrentWeekUseCase
 import com.vovka.egov66client.domain.schedule.GetScheduleWeekUseCase
 import com.vovka.egov66client.domain.schedule.entity.DayScheduleEntity
 import com.vovka.egov66client.domain.schedule.entity.WeekScheduleEntity
+import com.vovka.egov66client.domain.student.LogoutUseCase
 import com.vovka.egov66client.ui.schedule.ScheduleFragment
 import com.vovka.egov66client.ui.schedule.day.DayFragment
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,12 +24,14 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import kotlin.compareTo
+import kotlin.math.log
 import kotlin.text.compareTo
 
 class DayAdapter(
     private val fragmentActivity: FragmentActivity,
     private val getScheduleWeekUseCase: GetScheduleWeekUseCase,
-    private val getScheduleCurrentWeekUseCase: GetScheduleCurrentWeekUseCase
+    private val getScheduleCurrentWeekUseCase: GetScheduleCurrentWeekUseCase,
+    private val logoutUseCase: LogoutUseCase
 ) : FragmentStateAdapter(fragmentActivity) {
 
     private val weekSchedule = MutableStateFlow<WeekScheduleEntity?>(null)
@@ -58,7 +64,8 @@ class DayAdapter(
                     }
                 }
                 .onFailure { error ->
-                    Log.e("DayAdapter", "Failed to load schedule", error)
+                    logoutUseCase.invoke()
+                    (fragmentActivity as? DayFragment)?.findNavController()?.navigate(R.id.navigation_login,null)
                 }
         }
     }
@@ -72,7 +79,8 @@ class DayAdapter(
                     notifyDataSetChanged()
                 }
                 .onFailure { error ->
-                    Log.e("DayAdapter", "Failed to load schedule", error)
+                    logoutUseCase.invoke()
+                    (fragmentActivity as? ScheduleFragment)?.findNavController()?.navigate(R.id.navigation_login,null)
                 }
         }
     }
@@ -88,7 +96,8 @@ class DayAdapter(
                     notifyDataSetChanged()
                 }
                 .onFailure { error ->
-                    Log.e("DayAdapter", "Failed to load schedule", error)
+                    logoutUseCase.invoke()
+                    (fragmentActivity as? ScheduleFragment)?.findNavController()?.navigate(R.id.navigation_login,null)
                 }
         }
     }

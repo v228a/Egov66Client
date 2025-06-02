@@ -3,6 +3,7 @@ package com.vovka.egov66client.ui.homework.day
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import java.time.ZoneId
 import java.util.Calendar
 import java.util.Date
 
@@ -16,7 +17,10 @@ class HomeWorkDayAdapter (activity: FragmentActivity) : FragmentStateAdapter(act
         // Вычисляем реальную дату на основе позиции
         calendar.time = Date()
         calendar.add(Calendar.DAY_OF_MONTH, position - startPosition)
-        return HomeWorkDayFragment.newInstance(calendar.time)
+        val localDateTime = calendar.time.toInstant()
+            .atZone(ZoneId.systemDefault())
+            .toLocalDateTime()
+        return HomeWorkDayFragment.newInstance(localDateTime)
     }
 
     override fun getItemCount(): Int = Int.MAX_VALUE

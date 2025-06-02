@@ -25,7 +25,7 @@ class ScheduleFragment : Fragment(R.layout.fragment_schedule) {
     }
 
     private fun initCallback() {
-        binding.scheduleViewPager.adapter = DayAdapter(requireActivity(), viewModel.getScheduleWeekUseCase,viewModel.getScheduleCurrentWeekUseCase)
+        binding.scheduleViewPager.adapter = DayAdapter(requireActivity(), viewModel.getScheduleWeekUseCase,viewModel.getScheduleCurrentWeekUseCase,viewModel.logoutUseCase)
     }
 
     fun setCurrentItem(position: Int) {
