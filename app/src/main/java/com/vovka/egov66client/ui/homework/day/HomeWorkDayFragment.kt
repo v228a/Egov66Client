@@ -50,7 +50,7 @@ class HomeWorkDayFragment : Fragment(R.layout.fragment_home_work_day) {
 
                 }
                 is HomeWorkDayViewModel.State.Show -> {
-                    binding.homeworkRecycler.adapter = HomeWorkDayRecyclerAdapter(state.homeworks.homework)
+                    binding.homeworkRecycler.adapter = HomeWorkDayRecyclerAdapter(state.homeworks.homework,viewModel)
                     //TODO если нету домашек
                 }
 
@@ -59,6 +59,7 @@ class HomeWorkDayFragment : Fragment(R.layout.fragment_home_work_day) {
                 }
             }
         }
+
 
     }
 

@@ -38,12 +38,25 @@ class HomeWorkRepositoryImpl @Inject constructor(
             homeWorkNetworkDataSource.get().getHomework(
             Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
             studentId = studentStorageDataSource.get().studentId.first().toString(),
-            date = "2025-05-22"
+            date = "2025-05-22" //TODO харкод
         ).fold(
             onSuccess = { value -> homeWorkMapper.get().invoke(value) },
             onFailure = { error -> Result.failure(error) }
             )
         }
     }
+
+    override suspend fun setHomeworkDone(isDone: Boolean, homeworkId: String) {
+        return withContext(Dispatchers.IO){
+            homeWorkNetworkDataSource.get().setHomeworkDone(
+                Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
+                studentId = studentStorageDataSource.get().studentId.first().toString(),
+                homeworkId = homeworkId,
+                isDone = isDone
+            )
+        }
+    }
+
+
 }
 
