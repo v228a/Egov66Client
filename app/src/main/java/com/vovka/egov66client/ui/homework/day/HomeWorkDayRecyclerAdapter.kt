@@ -27,8 +27,10 @@ class HomeWorkDayRecyclerAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = homeworks[position]
         with(holder.binding) {
-            subjectTextView.text = item.lessonName
-            taskTextView.text = item.description
+//            subjectTextView.text = item.lessonName
+            AccordionHomeWork.setHeadingString(item.lessonName)
+            AccordionHomeWork.setMessageString(item.description)
+            form.text = if (item.isHomeworkElectronicForm) "Электронная форма" else "Бумажная форма"
         }
     }
 
