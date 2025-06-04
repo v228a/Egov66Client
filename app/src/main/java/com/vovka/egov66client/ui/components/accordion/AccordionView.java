@@ -72,6 +72,9 @@ public class AccordionView extends RelativeLayout {
 
     AccordionExpansionCollapseListener listener;
 
+    private Boolean isHeadingStrikethrough = false;
+    private Boolean isMessageStrikethrough = false;
+
     /***
      * Constructor taking only the context. This is useful in case
      * the developer wants to programatically create an accordion view.
@@ -532,7 +535,46 @@ public class AccordionView extends RelativeLayout {
 
     }
 
+    /***
+     * Set strikethrough for heading text
+     * @param strikethrough true to enable strikethrough, false to disable
+     */
+    public void setHeadingStrikethrough(Boolean strikethrough) {
+        isHeadingStrikethrough = strikethrough;
+        if (heading != null) {
+            heading.setPaintFlags(strikethrough ? 
+                heading.getPaintFlags() | android.graphics.Paint.STRIKE_THRU_TEXT_FLAG :
+                heading.getPaintFlags() & ~android.graphics.Paint.STRIKE_THRU_TEXT_FLAG);
+        }
+    }
 
+    /***
+     * Set strikethrough for message text
+     * @param strikethrough true to enable strikethrough, false to disable
+     */
+    public void setMessageStrikethrough(Boolean strikethrough) {
+        isMessageStrikethrough = strikethrough;
+        if (message != null) {
+            message.setPaintFlags(strikethrough ? 
+                message.getPaintFlags() | android.graphics.Paint.STRIKE_THRU_TEXT_FLAG :
+                message.getPaintFlags() & ~android.graphics.Paint.STRIKE_THRU_TEXT_FLAG);
+        }
+    }
 
+    /***
+     * Get current strikethrough state of heading
+     * @return true if heading is strikethrough, false otherwise
+     */
+    public Boolean isHeadingStrikethrough() {
+        return isHeadingStrikethrough;
+    }
+
+    /***
+     * Get current strikethrough state of message
+     * @return true if message is strikethrough, false otherwise
+     */
+    public Boolean isMessageStrikethrough() {
+        return isMessageStrikethrough;
+    }
 
 }

@@ -34,8 +34,13 @@ class HomeWorkDayRecyclerAdapter(
             AccordionHomeWork.setHeadingString(item.lessonName)
             AccordionHomeWork.setMessageString(item.description)
             checkBox.isChecked = item.isDone
+            AccordionHomeWork.isMessageStrikethrough = item.isDone
+            AccordionHomeWork.isHeadingStrikethrough = item.isDone
             checkBox.setOnCheckedChangeListener{buttonView, isChecked ->
                 viewModel.updateDoneHomeWork(isChecked,item.id)
+
+                AccordionHomeWork.isMessageStrikethrough = isChecked
+                AccordionHomeWork.isHeadingStrikethrough = isChecked
             }
             form.text = if (item.isHomeworkElectronicForm) "Электронная форма" else "Бумажная форма"
         }

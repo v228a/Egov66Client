@@ -10,30 +10,52 @@
         app:isAnimated="true"
         app:heading="This is a demo accordion"
         android:layout_margin="8dp"
-        app:isExpanded="true"
         app:isPartitioned="true">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:paddingBottom="8dp"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingEnd="8dp"
-                android:text="Форма сдачи:" />
+                android:paddingEnd="4dp"
+                android:text="Форма сдачи:"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/form"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Бумага" />
+                android:text="Бумага"
+                android:textSize="16sp" />
 
         </LinearLayout>
+
+<!--        <LinearLayout-->
+<!--            android:paddingLeft="4dp"-->
+<!--            android:paddingBottom="4dp"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal">-->
+
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:paddingEnd="8dp"-->
+<!--                android:text="Вложенные файлы:"-->
+<!--                android:textSize="16sp" />-->
+
+
+
+<!--        </LinearLayout>-->
 
         <CheckBox
             android:id="@+id/checkBox"
