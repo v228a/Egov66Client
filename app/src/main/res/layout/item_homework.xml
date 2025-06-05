@@ -63,6 +63,14 @@
             android:layout_height="wrap_content"
             android:text="Задание выполненно" />
 
+        <Button
+            android:id="@+id/fileButton"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Вложенные файлы"
+            android:visibility="gone" />
+
     </LinearLayout>
 
 <!--        <TextView-->

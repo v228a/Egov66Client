@@ -47,6 +47,12 @@ class HomeWorkDayViewModel @Inject constructor(
         }
     }
 
+    fun openCalendar(){
+        viewModelScope.launch {
+            _action.emit(Action.OpenCalendar)
+        }
+    }
+
 
 
     fun updateDoneHomeWork(isDone: Boolean,homeWorkId: String){
@@ -55,7 +61,10 @@ class HomeWorkDayViewModel @Inject constructor(
         }
     }
 
-    sealed interface Action {}
+    sealed interface Action {
+        data object OpenCalendar : Action
+
+    }
 
     sealed interface State{
         data object Loading : State

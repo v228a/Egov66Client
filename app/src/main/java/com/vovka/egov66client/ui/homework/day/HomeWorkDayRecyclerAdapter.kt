@@ -1,5 +1,5 @@
 package com.vovka.egov66client.ui.homework.day
-
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +8,7 @@ import com.vovka.egov66client.databinding.ItemHomeworkBinding
 import com.vovka.egov66client.domain.homework.GetHomeWorkUseCase
 import com.vovka.egov66client.domain.homework.SetHomeWorkDoneUseCase
 import com.vovka.egov66client.domain.homework.entity.HomeWorkEntity
+import com.vovka.egov66client.utils.visibleOrGone
 
 class HomeWorkDayRecyclerAdapter(
     private val homeworks: List<HomeWorkEntity>,
@@ -38,10 +39,10 @@ class HomeWorkDayRecyclerAdapter(
             AccordionHomeWork.isHeadingStrikethrough = item.isDone
             checkBox.setOnCheckedChangeListener{buttonView, isChecked ->
                 viewModel.updateDoneHomeWork(isChecked,item.id)
-
                 AccordionHomeWork.isMessageStrikethrough = isChecked
                 AccordionHomeWork.isHeadingStrikethrough = isChecked
             }
+            fileButton.visibleOrGone(item.homeWorkFiles.isNotEmpty())
             form.text = if (item.isHomeworkElectronicForm) "Электронная форма" else "Бумажная форма"
         }
     }

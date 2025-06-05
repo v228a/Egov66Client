@@ -12,7 +12,7 @@ class HomeWorkEntity(
     val lessonId: String,
     val description: String?,
     val isHomeworkElectronicForm: Boolean,
-    val homeWorkFiles: List<Any>,
+    val homeWorkFiles: List<HomeWorkFilesEntity>,
     val individualHomeworkDescription: String?,
     val isIndividualHomeworkElectronicForm: Boolean,
     val individualHomeWorkFiles: List<Any>
