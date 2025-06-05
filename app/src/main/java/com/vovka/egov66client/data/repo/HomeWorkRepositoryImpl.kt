@@ -38,7 +38,7 @@ class HomeWorkRepositoryImpl @Inject constructor(
             homeWorkNetworkDataSource.get().getHomework(
             Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
             studentId = studentStorageDataSource.get().studentId.first().toString(),
-            date = "2024-09-13" //TODO харкод
+            date = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         ).fold(
             onSuccess = { value -> homeWorkMapper.get().invoke(value) },
             onFailure = { error -> Result.failure(error) }
