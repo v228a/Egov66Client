@@ -64,7 +64,7 @@ class HomeWorkDayFragment : Fragment(R.layout.fragment_home_work_day) {
 
                 }
                 is HomeWorkDayViewModel.State.Show -> {
-                    binding.homeworkRecycler.adapter = HomeWorkDayRecyclerAdapter(state.homeworks.homework,viewModel)
+                    binding.homeworkRecycler.adapter = HomeWorkDayRecyclerAdapter(state.homeworks.homework,viewModel,requireActivity())
 //                    Log.d("g",state.homeworks.homework.isEmpty().toString())
                     binding.noHomeWorkTextView.visibleOrGone(state.homeworks.homework.isEmpty())
 
