@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -58,7 +59,7 @@ class DayAdapter(
                 .onFailure { error ->
                     logoutUseCase.invoke()
                     Log.d("F",fragmentActivity.toString())
-                    (fragmentActivity as? DayFragment)?.findNavController()?.navigate(R.id.navigation_login,null)
+                    fragmentActivity.findNavController(R.id.nav_host_fragment_activity_main).navigate(R.id.navigation_login,null)
                 }
         }
     }
@@ -72,7 +73,7 @@ class DayAdapter(
                 }
                 .onFailure { error ->
                     logoutUseCase.invoke()
-                    (fragmentActivity as? ScheduleFragment)?.findNavController()?.navigate(R.id.navigation_login,null)
+                    fragmentActivity.findNavController(R.id.nav_host_fragment_activity_main).navigate(R.id.navigation_login,null)
                 }
         }
     }
@@ -87,11 +88,10 @@ class DayAdapter(
                 }
                 .onFailure { error ->
                     logoutUseCase.invoke()
-                    (fragmentActivity as? ScheduleFragment)?.findNavController()?.navigate(R.id.navigation_login,null)
+                    fragmentActivity.findNavController(R.id.nav_host_fragment_activity_main).navigate(R.id.navigation_login,null)
                 }
         }
     }
-
     override fun getItemCount(): Int = allSchedules.size
 
     override fun createFragment(position: Int): Fragment {

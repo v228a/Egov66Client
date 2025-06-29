@@ -5,6 +5,7 @@ import com.vovka.egov66client.data.dto.homework.HomeWorkResponse
 import com.vovka.egov66client.data.dto.homework.HomeworkDone
 import dagger.Reusable
 import retrofit2.Retrofit
+import java.io.File
 import javax.inject.Inject
 
 
@@ -35,5 +36,9 @@ class HomeWorkNetworkDataSource @Inject constructor(
                 )
             )
         }
+    }
+
+    suspend fun downloadHomeWork(Aiss2Auth: String,FileID: String){
+
     }
 }
