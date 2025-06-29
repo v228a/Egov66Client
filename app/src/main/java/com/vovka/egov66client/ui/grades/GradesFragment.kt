@@ -1,41 +1,52 @@
 package com.vovka.egov66client.ui.grades
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import com.vovka.egov66client.databinding.FragmentGradesBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class GradesFragment : Fragment() {
+class GradesFragment : Fragment(com.vovka.egov66client.R.layout.fragment_grades) {
 
+    private val viewModel: GradesViewModel by viewModels()
     private var _binding: FragmentGradesBinding? = null
+    private val binding: FragmentGradesBinding get() = _binding!!
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentGradesBinding.bind(view)
+        initCallback()
+        subscribe()
+    }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val dashboardViewModel =
-            ViewModelProvider(this).get(GradesViewModel::class.java)
 
-        _binding = FragmentGradesBinding.inflate(inflater, container, false)
-        val root: View = binding.root
 
-        val textView: TextView = binding.textDashboard
-        dashboardViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
-        return root
+    private fun initCallback() {
+        val suggestions = arrayOf("Apple", "Banana", "Cherry", "Date", "Fig", "Grape")
+        val adapter = ArrayAdapter(
+            requireContext(), // or this@YourActivity if in Activity
+            android.R.layout.simple_dropdown_item_1line,
+            suggestions
+        )
+
+        // Set the adapter
+        binding.yearDropDown.setAdapter(adapter)
+        binding.periodDropDown.setAdapter(adapter)
+        binding.subjectDropDown.setAdapter(adapter)
+        binding.yearDropDown.setText(suggestions.get(0),false)
+
+
+    }
+
+
+
+    private fun subscribe() {
+
+
     }
 
     override fun onDestroyView() {

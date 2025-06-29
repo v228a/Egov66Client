@@ -3,14 +3,65 @@ package com.vovka.egov66client.ui.grades
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.vovka.egov66client.domain.grades.entity.PeriodEntity
+import com.vovka.egov66client.domain.grades.entity.SubjectEntity
+import com.vovka.egov66client.domain.grades.entity.YearsEntity
+import com.vovka.egov66client.ui.login.LoginViewModel
+import com.vovka.egov66client.utils.MutablePublishFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class GradesViewModel @Inject constructor() : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "Здесь будут оценки"
+
+    private val _action = MutablePublishFlow<Action>()
+    val action = _action.asSharedFlow()
+
+    private val _state = MutableStateFlow<State>(initialState)
+    val state = _state.asStateFlow()
+
+    fun loadSettings(){
+        viewModelScope.launch {
+            _action.emit(
+                Action.ShowSettings
+                    (
+                    yearData = TODO(),
+                    subjectData = TODO(),
+                    periodData = TODO()
+                )
+            )
+        }
     }
-    val text: LiveData<String> = _text
+
+
+
+
+    sealed interface State {
+        data object SettingsLoad : State
+        data object GradesLoad : State
+
+    }
+
+    sealed interface Action {
+        data object ChangeYear : Action
+
+        data class ShowSettings(
+            val yearData: List<YearsEntity>,
+            val subjectData: List<SubjectEntity>,
+            val periodData: List<PeriodEntity>,
+        ) : Action
+
+        data object ChangePeriod : Action
+        data object ChangeSubject : Action
+    }
+
+    companion object {
+        val initialState = State.SettingsLoad
+    }
 }
