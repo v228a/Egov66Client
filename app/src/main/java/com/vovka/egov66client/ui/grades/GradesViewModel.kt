@@ -1,13 +1,18 @@
 package com.vovka.egov66client.ui.grades
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vovka.egov66client.domain.grades.GetPeriodUseCase
+import com.vovka.egov66client.domain.grades.GetSchoolYearsUseCase
+import com.vovka.egov66client.domain.grades.GetSubjectsUseCase
 import com.vovka.egov66client.domain.grades.entity.PeriodEntity
 import com.vovka.egov66client.domain.grades.entity.SubjectEntity
 import com.vovka.egov66client.domain.grades.entity.YearsEntity
 import com.vovka.egov66client.ui.login.LoginViewModel
+import com.vovka.egov66client.ui.profile.ProfileViewModel
 import com.vovka.egov66client.utils.MutablePublishFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,8 +21,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
+
 @HiltViewModel
-class GradesViewModel @Inject constructor() : ViewModel() {
+class GradesViewModel @Inject constructor(
+    val getSchoolYearsUseCase: GetSchoolYearsUseCase,
+    val getSubjectsUseCase: GetSubjectsUseCase,
+    val getPeriodUseCase: GetPeriodUseCase
+) : ViewModel() {
 
 
     private val _action = MutablePublishFlow<Action>()
@@ -26,20 +37,27 @@ class GradesViewModel @Inject constructor() : ViewModel() {
     private val _state = MutableStateFlow<State>(initialState)
     val state = _state.asStateFlow()
 
+
     fun loadSettings(){
+        print("safas")
         viewModelScope.launch {
-            _action.emit(
-                Action.ShowSettings
-                    (
-                    yearData = TODO(),
-                    subjectData = TODO(),
-                    periodData = TODO()
+            // почините это
+            _action.emit(Action.ShowSettings(
+                yearData = getSchoolYearsUseCase.invoke().fold(
+                    onSuccess = {it},
+                    onFailure = {TODO()}
+                ),
+                subjectData = getSubjectsUseCase.invoke().fold(
+                    onSuccess = {it},
+                    onFailure = {TODO()}
+                ),
+                periodData = getPeriodUseCase.invoke().fold(
+                    onSuccess = {it},
+                    onFailure = {TODO()}
                 )
-            )
+            ))
         }
     }
-
-
 
 
     sealed interface State {

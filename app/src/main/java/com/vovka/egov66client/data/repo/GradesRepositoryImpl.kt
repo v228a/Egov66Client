@@ -1,6 +1,9 @@
 package com.vovka.egov66client.data.repo
 
+import android.util.Log
 import com.vovka.egov66client.data.mapper.HomeWorkMapper
+import com.vovka.egov66client.data.mapper.grades.PeriodMapper
+import com.vovka.egov66client.data.mapper.grades.SubjectsMapper
 import com.vovka.egov66client.data.mapper.grades.YearMapper
 import com.vovka.egov66client.data.source.GradesNetworkDataSource
 import com.vovka.egov66client.data.source.HomeWorkNetworkDataSource
@@ -22,7 +25,9 @@ import javax.inject.Inject
 class GradesRepositoryImpl @Inject constructor(
     private val gradesNetworkDataSource: Lazy<GradesNetworkDataSource>,
     private val studentStorageDataSource: Lazy<StudentStorageDataSource>,
-    private val yearMapper: Lazy<YearMapper>
+    private val yearMapper: Lazy<YearMapper>,
+    private val subjectsMapper: Lazy<SubjectsMapper>,
+    private val periodMapper: Lazy<PeriodMapper>
 ): GradesRepository {
 
 
@@ -39,11 +44,32 @@ class GradesRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getPeriods(): Result<List<PeriodEntity>> {
-        TODO("Not yet implemented")
+        return withContext(Dispatchers.IO) {
+            gradesNetworkDataSource.get().getPeriods(
+                Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
+                studentId = studentStorageDataSource.get().studentId.first().toString(),
+                schoolYear = "2024"
+            ).fold(
+                onSuccess = { value -> periodMapper.get().invoke(value) },
+                onFailure = { error ->
+                Log.d("f",error.message.toString())
+                    Result.failure(error)
+                }
+            )
+        }
     }
 
     override suspend fun getSubjects(): Result<List<SubjectEntity>> {
-        TODO("Not yet implemented")
+        return withContext(Dispatchers.IO) {
+            gradesNetworkDataSource.get().getSubjects(
+                Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
+                studentId = studentStorageDataSource.get().studentId.first().toString(),
+                schoolYear = "2024"
+            ).fold(
+                onSuccess = { value -> subjectsMapper.get().invoke(value) },
+                onFailure = { error -> Result.failure(error) }
+            )
+        }
     }
 
 

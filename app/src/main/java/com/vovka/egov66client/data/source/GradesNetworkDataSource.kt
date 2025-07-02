@@ -2,6 +2,7 @@ package com.vovka.egov66client.data.source
 
 import com.vovka.egov66client.data.dto.grades.PeriodsResponse
 import com.vovka.egov66client.data.dto.grades.SchoolYearResponse
+import com.vovka.egov66client.data.dto.grades.SubjectResponse
 import com.vovka.egov66client.data.dto.student.StudentResponse
 import dagger.Reusable
 import retrofit2.Retrofit
@@ -19,16 +20,22 @@ class GradesNetworkDataSource @Inject constructor(
         return runCatching { api.getYears(Aiss2Auth, studentId) }
     }
 
-//    suspend fun getSubjects(Aiss2Auth: String, studentId: String,classId: String,schoolYear: String): Result<SchoolYear> {
-//        return runCatching { api.getSubjects(
-//            Aiss2Auth = Aiss2Auth,
-//            studentId = studentId,
-//            classId = classId,
-//            schoolYear = schoolYear
-//        ) }
-//    }
-
-    suspend fun getPeriods(Aiss2Auth: String, studentId: String,classId: String): Result<PeriodsResponse> {
-        return runCatching { api.getPeriods(Aiss2Auth, studentId,classId) }
+    suspend fun getSubjects(Aiss2Auth: String, studentId: String,schoolYear: String): Result<SubjectResponse> {
+        return runCatching { api.getSubjects(
+            Aiss2Auth = Aiss2Auth,
+            studentId = studentId,
+            schoolYear = schoolYear
+        ) }
     }
+
+    suspend fun getPeriods(Aiss2Auth: String, studentId: String,schoolYear: String): Result<PeriodsResponse> {
+        return runCatching { api.getPeriods(
+            Aiss2Auth = Aiss2Auth,
+            studentId = studentId,
+            schoolYear = schoolYear
+        )  }
+    }
+
+
+//    suspend fun getClassId(Aiss2Auth: String, studentId: String,schoolYear: String):
 }
