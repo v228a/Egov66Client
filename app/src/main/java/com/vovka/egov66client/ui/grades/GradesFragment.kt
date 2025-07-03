@@ -6,9 +6,12 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.vovka.egov66client.R
 import com.vovka.egov66client.databinding.FragmentGradesBinding
+import com.vovka.egov66client.domain.grades.entity.GradeWeekEntity
+import com.vovka.egov66client.ui.grades.adapters.GradesWeekAdapter
 import com.vovka.egov66client.ui.login.LoginViewModel
 import com.vovka.egov66client.utils.collectWhenStarted
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,6 +36,16 @@ class GradesFragment : Fragment(com.vovka.egov66client.R.layout.fragment_grades)
 
 
     private fun initCallback() {
+        val gradesList = listOf(
+        GradeWeekEntity("1", "5", "Математика", "2", "8:40 - 9:20"),
+        GradeWeekEntity("2", "4", "Физика", "3", "9:30 - 10:10"),
+        GradeWeekEntity("3", "5", "Литература", "4", "10:20 - 11:00")
+    )
+
+        val adapter = GradesWeekAdapter(gradesList)
+        binding.gradesRecycler.adapter = adapter
+        binding.gradesRecycler.layoutManager = LinearLayoutManager(requireContext())
+
 
     }
 
