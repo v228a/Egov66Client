@@ -30,6 +30,21 @@ class GradesRepositoryImpl @Inject constructor(
     private val periodMapper: Lazy<PeriodMapper>
 ): GradesRepository {
 
+    override suspend fun getCurrentYear(): Result<String> {
+        return withContext(Dispatchers.IO) {
+            gradesNetworkDataSource.get().getYears(
+                Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
+                studentId = studentStorageDataSource.get().studentId.first().toString(),
+            ).fold(
+                onSuccess = { value -> Result.success(value.currentYear.text) },
+                onFailure = { error ->
+
+
+                    Result.failure(error) }
+            )
+        }
+    }
+
 
     override suspend fun getYears(): Result<List<YearsEntity>> {
         return withContext(Dispatchers.IO) {
@@ -45,10 +60,11 @@ class GradesRepositoryImpl @Inject constructor(
 
     override suspend fun getPeriods(): Result<List<PeriodEntity>> {
         return withContext(Dispatchers.IO) {
+
             gradesNetworkDataSource.get().getPeriods(
                 Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
                 studentId = studentStorageDataSource.get().studentId.first().toString(),
-                schoolYear = "2024"
+                schoolYear = getCurrentYear().getOrNull().toString()
             ).fold(
                 onSuccess = { value -> periodMapper.get().invoke(value) },
                 onFailure = { error ->
@@ -60,11 +76,12 @@ class GradesRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getSubjects(): Result<List<SubjectEntity>> {
+        Log.d("Grades", getCurrentYear().getOrNull().toString())
         return withContext(Dispatchers.IO) {
             gradesNetworkDataSource.get().getSubjects(
                 Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
                 studentId = studentStorageDataSource.get().studentId.first().toString(),
-                schoolYear = "2024"
+                schoolYear = getCurrentYear().getOrNull().toString()
             ).fold(
                 onSuccess = { value -> subjectsMapper.get().invoke(value) },
                 onFailure = { error -> Result.failure(error) }

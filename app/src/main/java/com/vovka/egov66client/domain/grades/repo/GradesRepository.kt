@@ -8,4 +8,5 @@ interface GradesRepository {
     suspend fun getYears() : Result<List<YearsEntity>>
     suspend fun getPeriods() : Result<List<PeriodEntity>>
     suspend fun getSubjects() : Result<List<SubjectEntity>>
+    suspend fun getCurrentYear() : Result<String>
 }
