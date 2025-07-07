@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.vovka.egov66client.domain.grades.GetPeriodUseCase
 import com.vovka.egov66client.domain.grades.GetSchoolYearsUseCase
 import com.vovka.egov66client.domain.grades.GetSubjectsUseCase
+import com.vovka.egov66client.domain.grades.GetWeekGradesUseCase
+import com.vovka.egov66client.domain.grades.entity.GradeWeekEntity
 import com.vovka.egov66client.domain.grades.entity.PeriodEntity
 import com.vovka.egov66client.domain.grades.entity.SubjectEntity
 import com.vovka.egov66client.domain.grades.entity.YearsEntity
@@ -27,7 +29,8 @@ import javax.inject.Inject
 class GradesViewModel @Inject constructor(
     val getSchoolYearsUseCase: GetSchoolYearsUseCase,
     val getSubjectsUseCase: GetSubjectsUseCase,
-    val getPeriodUseCase: GetPeriodUseCase
+    val getPeriodUseCase: GetPeriodUseCase,
+    val getWeekGradesUseCase: GetWeekGradesUseCase
 ) : ViewModel() {
 
 
@@ -38,23 +41,26 @@ class GradesViewModel @Inject constructor(
     val state = _state.asStateFlow()
 
 
+
+
     fun loadSettings(){
-        print("safas")
         viewModelScope.launch {
             // почините это
             _action.emit(Action.ShowSettings(
-                yearData = getSchoolYearsUseCase.invoke().fold(
+                yearData = getSchoolYearsUseCase.invoke().getOrNull(),
+                subjectData = getSubjectsUseCase.invoke().getOrNull(),
+                periodData = getPeriodUseCase.invoke().getOrNull()
+            ))
+        }
+    }
+
+    fun loadWeekGrades(){
+        viewModelScope.launch {
+            _action.emit(Action.ShowWeekGrades(
+                getWeekGradesUseCase.invoke().fold(
                     onSuccess = {it},
                     onFailure = {TODO()}
                 ),
-                subjectData = getSubjectsUseCase.invoke().fold(
-                    onSuccess = {it},
-                    onFailure = {TODO()}
-                ),
-                periodData = getPeriodUseCase.invoke().fold(
-                    onSuccess = {it},
-                    onFailure = {TODO()}
-                )
             ))
         }
     }
@@ -69,10 +75,14 @@ class GradesViewModel @Inject constructor(
     sealed interface Action {
         data object ChangeYear : Action
 
+        data class ShowWeekGrades(
+            val grades: List<GradeWeekEntity>
+        ) : Action
+
         data class ShowSettings(
-            val yearData: List<YearsEntity>,
-            val subjectData: List<SubjectEntity>,
-            val periodData: List<PeriodEntity>,
+            val yearData: List<YearsEntity>?,
+            val subjectData: List<SubjectEntity>?,
+            val periodData: List<PeriodEntity>?,
         ) : Action
 
         data object ChangePeriod : Action

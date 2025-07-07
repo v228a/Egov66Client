@@ -1,6 +1,7 @@
 package com.vovka.egov66client.ui.grades
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
@@ -36,17 +37,7 @@ class GradesFragment : Fragment(com.vovka.egov66client.R.layout.fragment_grades)
 
 
     private fun initCallback() {
-        val gradesList = listOf(
-        GradeWeekEntity("1", "5", "Математика", "2", "8:40 - 9:20"),
-        GradeWeekEntity("2", "4", "Физика", "3", "9:30 - 10:10"),
-        GradeWeekEntity("3", "5", "Литература", "4", "10:20 - 11:00")
-    )
-
-        val adapter = GradesWeekAdapter(gradesList)
-        binding.gradesRecycler.adapter = adapter
         binding.gradesRecycler.layoutManager = LinearLayoutManager(requireContext())
-
-
     }
 
 
@@ -58,35 +49,66 @@ class GradesFragment : Fragment(com.vovka.egov66client.R.layout.fragment_grades)
                 GradesViewModel.Action.ChangeSubject -> TODO()
                 GradesViewModel.Action.ChangeYear -> TODO()
                 is GradesViewModel.Action.ShowSettings -> {
-                    val yearData = action.yearData.map { it.name }
-                    val periodData = action.periodData.map { it.name }
-                    val subjectsData = action.subjectData.map { it.name }
+                    val yearData = action.yearData?.map { it.name }
+                    val periodData = action.periodData?.map { it.name }
+                    val subjectsData = action.subjectData?.map { it.name }
 
-                    binding.yearDropDown.setAdapter(ArrayAdapter(
-                        requireContext(),
-                        android.R.layout.simple_dropdown_item_1line,
-                        (yearData)
-                    ))
-                    binding.yearDropDown.setText(yearData.get(0),false)
+                    if (!yearData.isNullOrEmpty()){
+                        binding.yearDropDown.setAdapter(ArrayAdapter(
+                            requireContext(),
+                            android.R.layout.simple_dropdown_item_1line,
+                            (yearData!!)
+                        ))
+                        binding.yearDropDown.setText(yearData.get(0),false)
+                    }
 
-                    binding.subjectDropDown.setAdapter(ArrayAdapter(
-                        requireContext(),
-                        android.R.layout.simple_dropdown_item_1line,
-                        (subjectsData)
-                    ))
-                    binding.subjectDropDown.setText(subjectsData.get(0),false)
+                    if(!periodData.isNullOrEmpty()){
+                        binding.subjectDropDown.setAdapter(ArrayAdapter(
+                            requireContext(),
+                            android.R.layout.simple_dropdown_item_1line,
+                            (subjectsData!!)
+                        ))
+                        binding.subjectDropDown.setText(subjectsData.get(0),false)
+                    }
 
-                    binding.periodDropDown.setAdapter(ArrayAdapter(
-                        requireContext(),
-                        android.R.layout.simple_dropdown_item_1line,
-                        (periodData)
-                    ))
-                    binding.periodDropDown.setText(periodData.get(0),false)
+                    if (!subjectsData.isNullOrEmpty()){
+                        binding.periodDropDown.setAdapter(ArrayAdapter(
+                            requireContext(),
+                            android.R.layout.simple_dropdown_item_1line,
+                            (periodData!!)
+                        ))
+                        binding.periodDropDown.setText(periodData.get(0),false)
+                    }
+
+                    viewModel.loadWeekGrades()
 
 
                 }
+
+                is GradesViewModel.Action.ShowWeekGrades -> {
+                    val gradesList = listOf(
+                        GradeWeekEntity("1", "5", "Математика", "2", "8:40 - 9:20"),
+                        GradeWeekEntity("2", "4", "Физика", "3", "9:30 - 10:10"),
+                        GradeWeekEntity("3", "5", "Литература", "4", "10:20 - 11:00")
+                    )
+                    binding.gradesRecycler.adapter = GradesWeekAdapter(gradesList)
+                    Log.d("f",action.grades.isEmpty().toString())
+                    action.grades.forEach {
+                        Log.d("f", it.lesson)
+                    }
+                }
             }
         }
+
+
+
+
+
+
+
+
+
+
 
 
     }

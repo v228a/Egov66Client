@@ -1,5 +1,6 @@
 package com.vovka.egov66client.data.source
 
+import com.vovka.egov66client.data.dto.grades.GradesResponse
 import com.vovka.egov66client.data.dto.grades.PeriodsResponse
 import com.vovka.egov66client.data.dto.grades.SchoolYearResponse
 import com.vovka.egov66client.data.dto.grades.SubjectResponse
@@ -10,6 +11,8 @@ import retrofit2.http.Query
 
 interface GradesApi {
 
+
+
     @GET("/api/estimate/years")
     suspend fun getYears(
         @Header("Authorization") Aiss2Auth: String,
@@ -18,6 +21,19 @@ interface GradesApi {
         @Header("Accept") accept: String = "*/*",
         @Header("Accept-Encoding") acceptEncoding: String = "gzip, deflate, br"
     ): SchoolYearResponse
+
+    @GET("/api/estimate/years")
+    suspend fun getWeekGrades(
+        @Header("Authorization") Aiss2Auth: String,
+        @Query("schoolYear") schoolYear: String,
+        @Query("periodId") periodId: String,
+        @Query("subjectId") subjectId: String,
+        @Query("studentId") studentId: String,
+        @Query("weekNumber") weekNumber: Int,
+        @Header("User-Agent") userAgent: String = "Mozilla/5.0",
+        @Header("Accept") accept: String = "*/*",
+        @Header("Accept-Encoding") acceptEncoding: String = "gzip, deflate, br"
+    ): GradesResponse
 
     @GET("/api/estimate/periods")
     suspend fun getPeriods(
