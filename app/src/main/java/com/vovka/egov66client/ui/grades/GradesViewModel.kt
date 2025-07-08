@@ -57,9 +57,14 @@ class GradesViewModel @Inject constructor(
     fun loadWeekGrades(){
         viewModelScope.launch {
             _action.emit(Action.ShowWeekGrades(
-                getWeekGradesUseCase.invoke().fold(
+                getWeekGradesUseCase.invoke(
+                    periodId = "73ed2704-8a44-4f76-a438-51083af69ef4",
+                    subjectId = "00000000-0000-0000-0000-000000000000",
+                    weekNumber = 4,
+                    schoolYearId = "2024"
+                ).fold(
                     onSuccess = {it},
-                    onFailure = {TODO()}
+                    onFailure = { TODO()}
                 ),
             ))
         }

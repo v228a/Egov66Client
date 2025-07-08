@@ -1,11 +1,13 @@
 package com.vovka.egov66client.data.source
 
+import com.vovka.egov66client.data.dto.grades.ClassesResponse
 import com.vovka.egov66client.data.dto.grades.GradesResponse
 import com.vovka.egov66client.data.dto.grades.PeriodsResponse
 import com.vovka.egov66client.data.dto.grades.SchoolYearResponse
 import com.vovka.egov66client.data.dto.grades.SubjectResponse
 import com.vovka.egov66client.data.dto.student.StudentResponse
 import dagger.Reusable
+import retrofit2.Response
 import retrofit2.Retrofit
 import javax.inject.Inject
 
@@ -28,6 +30,7 @@ class GradesNetworkDataSource @Inject constructor(
         subjectId: String,
         studentId: String,
         weekNumber: Int,
+        classId: String
     ) : Result<GradesResponse>{
         return runCatching {
             api.getWeekGrades(
@@ -36,7 +39,8 @@ class GradesNetworkDataSource @Inject constructor(
                 periodId = periodId,
                 subjectId = subjectId,
                 studentId   = studentId,
-                weekNumber = weekNumber
+                weekNumber = weekNumber,
+                classId = classId
             )
         }
     }
@@ -47,6 +51,16 @@ class GradesNetworkDataSource @Inject constructor(
             studentId = studentId,
             schoolYear = schoolYear
         ) }
+    }
+
+    suspend fun getClasses(Aiss2Auth: String,schoolYear: String,studentId: String): Result<ClassesResponse>{
+        return runCatching{
+            api.getClasses(
+                Aiss2Auth = Aiss2Auth,
+                schoolYear = schoolYear,
+                studentId = studentId
+            )
+        }
     }
 
     suspend fun getPeriods(Aiss2Auth: String, studentId: String,schoolYear: String): Result<PeriodsResponse> {

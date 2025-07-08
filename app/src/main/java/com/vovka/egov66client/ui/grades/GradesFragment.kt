@@ -91,11 +91,7 @@ class GradesFragment : Fragment(com.vovka.egov66client.R.layout.fragment_grades)
                         GradeWeekEntity("2", "4", "Физика", "3", "9:30 - 10:10"),
                         GradeWeekEntity("3", "5", "Литература", "4", "10:20 - 11:00")
                     )
-                    binding.gradesRecycler.adapter = GradesWeekAdapter(gradesList)
-                    Log.d("f",action.grades.isEmpty().toString())
-                    action.grades.forEach {
-                        Log.d("f", it.lesson)
-                    }
+                    binding.gradesRecycler.adapter = GradesWeekAdapter(action.grades)
                 }
             }
         }

@@ -40,6 +40,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     }
 
     private fun initCallback() {
+        viewModel.checkToken() //Если токен уже в хранилище то пропускаем вход
 
         //TODO Костыль
         requireActivity().findViewById<BottomNavigationView>(R.id.nav_view).visibility = View.GONE
@@ -131,7 +132,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                     requireActivity().findViewById<BottomNavigationView>(R.id.nav_view).visibility = View.VISIBLE
                     requireActivity().actionBar?.show()
                     findNavController().navigate(R.id.navigation_home)
-
                 }
             }
         }

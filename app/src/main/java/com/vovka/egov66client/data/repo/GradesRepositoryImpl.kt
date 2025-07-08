@@ -22,6 +22,9 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.vovka.egov66client.data.mapper.grades.ClassesMapper
 
 @Reusable
 class GradesRepositoryImpl @Inject constructor(
@@ -30,42 +33,69 @@ class GradesRepositoryImpl @Inject constructor(
     private val yearMapper: Lazy<YearMapper>,
     private val subjectsMapper: Lazy<SubjectsMapper>,
     private val periodMapper: Lazy<PeriodMapper>,
-    private val weekMapper: Lazy<WeekMapper>
+    private val weekMapper: Lazy<WeekMapper>,
+    private val classesMapper: Lazy<ClassesMapper>
 ): GradesRepository {
 
-    /*
-    В getWeekGrades должен идти classId, хотя и без него
-    все абсолютно прекрасно работает
-    Так что если что-то сломается то мы хотябы догадаемся что чинить
-     */
 
-    override suspend fun getCurrentYear(): Result<String> {
+    override suspend fun getCurrentYearText(): Result<String> {
+        //2024-2025
         return withContext(Dispatchers.IO) {
             gradesNetworkDataSource.get().getYears(
                 Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
                 studentId = studentStorageDataSource.get().studentId.first().toString(),
             ).fold(
                 onSuccess = { value -> Result.success(value.currentYear.text) },
-                onFailure = { error ->
-
-
-                    Result.failure(error) }
+                onFailure = { error -> Result.failure(error) }
             )
         }
     }
 
-    override suspend fun getWeekGrades(): Result<List<GradeWeekEntity>> {
+    override suspend fun getCurrentYearId(): Result<String> {
+        //2024
+        return withContext(Dispatchers.IO) {
+            gradesNetworkDataSource.get().getYears(
+                Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
+                studentId = studentStorageDataSource.get().studentId.first().toString(),
+            ).fold(
+                onSuccess = { value -> Result.success(value.currentYear.text) },
+                onFailure = { error -> Result.failure(error) }
+            )
+        }
+    }
+
+    override suspend fun getWeekGrades(
+        periodId: String,
+        subjectId: String,
+        weekNumber: Int?,
+        schoolYearId: String
+    ): Result<List<GradeWeekEntity>> {
         return withContext(Dispatchers.IO){
             gradesNetworkDataSource.get().getWeekGrades(
                 Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
-                schoolYear = "2024",
-                periodId = "73ed2704-8a44-4f76-a438-51083af69ef4",
-                subjectId = "00000000-0000-0000-0000-000000000000",
+                schoolYear = schoolYearId,
+                periodId = periodId,
+                subjectId = subjectId,
                 studentId = studentStorageDataSource.get().studentId.first().toString(),
-                weekNumber = 24
+                weekNumber = 2,
+                classId = getClassId().getOrNull().toString() //TODO Fix
+                //TODO classId меняется каждый год, и нужно подогнать его под каждый год
             ).fold(
                 onSuccess = { value -> weekMapper.get().invoke(value) },
                 onFailure = { error -> Result.failure(error) }
+            )
+        }
+    }
+
+    override suspend fun getClassId(): Result<String> {
+        return withContext(Dispatchers.IO){
+            gradesNetworkDataSource.get().getClasses(
+                Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
+                studentId = studentStorageDataSource.get().studentId.first().toString(),
+                schoolYear = getCurrentYearId().getOrNull().toString()
+            ).fold(
+                onSuccess = {value -> classesMapper.get().invoke(value)},
+                onFailure = { error -> Result.failure(error)}
             )
         }
     }
@@ -89,7 +119,7 @@ class GradesRepositoryImpl @Inject constructor(
             gradesNetworkDataSource.get().getPeriods(
                 Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
                 studentId = studentStorageDataSource.get().studentId.first().toString(),
-                schoolYear = getCurrentYear().getOrNull().toString()
+                schoolYear = getCurrentYearText().getOrNull().toString()
             ).fold(
                 onSuccess = { value -> periodMapper.get().invoke(value) },
                 onFailure = { error ->
@@ -101,12 +131,11 @@ class GradesRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getSubjects(): Result<List<SubjectEntity>> {
-        Log.d("Grades", getCurrentYear().getOrNull().toString())
         return withContext(Dispatchers.IO) {
             gradesNetworkDataSource.get().getSubjects(
                 Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
                 studentId = studentStorageDataSource.get().studentId.first().toString(),
-                schoolYear = "2024-2025"//getCurrentYear().getOrNull().toString()
+                schoolYear = getCurrentYearText().getOrNull().toString()
             ).fold(
                 onSuccess = { value -> subjectsMapper.get().invoke(value) },
                 onFailure = { error ->
@@ -116,6 +145,4 @@ class GradesRepositoryImpl @Inject constructor(
             )
         }
     }
-
-
 }

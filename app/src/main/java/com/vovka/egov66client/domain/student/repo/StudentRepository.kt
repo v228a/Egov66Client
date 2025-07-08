@@ -7,4 +7,5 @@ interface StudentRepository {
     suspend fun updateAuthToken(token: String)
     suspend fun updateStudentId()
     suspend fun logout()
+    suspend fun checkAuthToken(): Boolean
 }

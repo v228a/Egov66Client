@@ -2,6 +2,7 @@ package com.vovka.egov66client.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vovka.egov66client.domain.student.TokenOnStorageUseCase
 import com.vovka.egov66client.domain.student.UpdateStudentIdUseCase
 import com.vovka.egov66client.domain.student.UpdateTokenUseCase
 import com.vovka.egov66client.ui.profile.ProfileViewModel
@@ -15,7 +16,9 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val updateTokenUseCase: UpdateTokenUseCase,
-    private val updateStudentIdUseCase: UpdateStudentIdUseCase
+    private val updateStudentIdUseCase: UpdateStudentIdUseCase,
+    private val tokenOnStorageUseCase: TokenOnStorageUseCase
+
 ): ViewModel() {
 
 
@@ -34,6 +37,12 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    fun checkToken(){
+        viewModelScope.launch {
+            if (tokenOnStorageUseCase()) _action.emit(Action.OpenSchedule)
+        }
+    }
+
 
 
     sealed interface State {
@@ -46,8 +55,5 @@ class LoginViewModel @Inject constructor(
 
     }
     companion object {
-
-
-//        val initialState = State.Loading
     }
 }

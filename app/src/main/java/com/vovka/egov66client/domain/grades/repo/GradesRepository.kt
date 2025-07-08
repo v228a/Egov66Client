@@ -9,6 +9,13 @@ interface GradesRepository {
     suspend fun getYears() : Result<List<YearsEntity>>
     suspend fun getPeriods() : Result<List<PeriodEntity>>
     suspend fun getSubjects() : Result<List<SubjectEntity>>
-    suspend fun getCurrentYear() : Result<String>
-    suspend fun getWeekGrades(): Result<List<GradeWeekEntity>>
+    suspend fun getCurrentYearText() : Result<String>
+    suspend fun getCurrentYearId() : Result<String>
+    suspend fun getWeekGrades(
+        periodId: String,
+        subjectId: String,
+        weekNumber: Int?,
+        schoolYearId: String
+    ): Result<List<GradeWeekEntity>>
+    suspend fun getClassId() : Result<String>
 }
