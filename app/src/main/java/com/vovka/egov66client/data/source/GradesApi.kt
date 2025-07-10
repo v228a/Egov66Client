@@ -31,7 +31,7 @@ interface GradesApi {
         @Query("subjectId") subjectId: String,
         @Query("studentId") studentId: String,
         @Query("classId") classId: String,
-        @Query("weekNumber") weekNumber: Int,
+        @Query("weekNumber") weekNumber: Int?,
         @Header("User-Agent") userAgent: String = "Mozilla/5.0",
         @Header("Accept") accept: String = "*/*",
         @Header("Accept-Encoding") acceptEncoding: String = "gzip, deflate, br"

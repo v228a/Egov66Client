@@ -9,7 +9,9 @@ class GetSubjectsUseCase @Inject constructor(
     private val repo: GradesRepository
 
 ) {
-    suspend operator fun invoke(): Result<List<SubjectEntity>> {
-        return repo.getSubjects()
+    suspend operator fun invoke(schoolYear: String = ""): Result<List<SubjectEntity>> {
+        return repo.getSubjects(
+            schoolYear = schoolYear
+        )
     }
 }

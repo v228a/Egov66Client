@@ -29,7 +29,7 @@ class GradesNetworkDataSource @Inject constructor(
         periodId: String,
         subjectId: String,
         studentId: String,
-        weekNumber: Int,
+        weekNumber: Int?,
         classId: String
     ) : Result<GradesResponse>{
         return runCatching {

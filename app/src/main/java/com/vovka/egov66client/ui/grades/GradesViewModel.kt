@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vovka.egov66client.core.Constants
 import com.vovka.egov66client.domain.grades.GetPeriodUseCase
 import com.vovka.egov66client.domain.grades.GetSchoolYearsUseCase
 import com.vovka.egov66client.domain.grades.GetSubjectsUseCase
@@ -40,31 +41,81 @@ class GradesViewModel @Inject constructor(
     private val _state = MutableStateFlow<State>(initialState)
     val state = _state.asStateFlow()
 
+    private var loadedYears: List<YearsEntity>? = null
+    private var loadedSubjects: List<SubjectEntity>? = null
+    private var loadedPeriods: List<PeriodEntity>? = null
 
-
-
-    fun loadSettings(){
+    fun loadYears() {
+        _state.value = State.SettingsLoad
         viewModelScope.launch {
-            // почините это
-            _action.emit(Action.ShowSettings(
-                yearData = getSchoolYearsUseCase.invoke().getOrNull(),
-                subjectData = getSubjectsUseCase.invoke().getOrNull(),
-                periodData = getPeriodUseCase.invoke().getOrNull()
-            ))
+            val years = getSchoolYearsUseCase.invoke().getOrNull()
+            loadedYears = years
+            _action.emit(Action.ShowYears(years))
+            checkAllSettingsLoaded()
         }
     }
 
-    fun loadWeekGrades(){
+    fun loadSubjects(schoolYear: String = "") {
+        _state.value = State.SettingsLoad
+        viewModelScope.launch {
+            val subjects = getSubjectsUseCase.invoke(
+                schoolYear = schoolYear
+            ).getOrNull()
+            loadedSubjects = subjects
+            _action.emit(Action.ShowSubjects(subjects))
+            checkAllSettingsLoaded()
+        }
+    }
+
+    fun loadPeriods() {
+        _state.value = State.SettingsLoad
+        viewModelScope.launch {
+            val periods = getPeriodUseCase.invoke().getOrNull()
+            loadedPeriods = periods
+            _action.emit(Action.ShowPeriods(periods))
+            checkAllSettingsLoaded()
+        }
+    }
+
+    fun loadAllSettings() {
+        loadedYears = null
+        loadedSubjects = null
+        loadedPeriods = null
+        loadYears()
+        loadSubjects()
+        loadPeriods()
+    }
+
+    private fun checkAllSettingsLoaded() {
+        if (loadedYears != null && loadedSubjects != null && loadedPeriods != null) {
+            _action.tryEmit(Action.ShowSettings(
+                yearData = loadedYears,
+                subjectData = loadedSubjects,
+                periodData = loadedPeriods
+            ))
+            // Optionally, trigger loading grades here or let Fragment do it
+        }
+    }
+
+    fun loadWeekGrades(
+        subjectId: String = Constants.ALL_SUBJECTS_ID,
+        weekNumber: Int? = null,
+        periodId: String? = "",
+        schoolYear: String = ""
+    ){
+        if (periodId.isNullOrEmpty()){
+            return
+        }
         viewModelScope.launch {
             _action.emit(Action.ShowWeekGrades(
                 getWeekGradesUseCase.invoke(
-                    periodId = "73ed2704-8a44-4f76-a438-51083af69ef4",
-                    subjectId = "00000000-0000-0000-0000-000000000000",
-                    weekNumber = 4,
-                    schoolYearId = "2024"
+                    periodId = periodId,
+                    subjectId = subjectId,
+                    weekNumber = weekNumber,
+                    schoolYearId = schoolYear
                 ).fold(
                     onSuccess = {it},
-                    onFailure = { TODO()}
+                    onFailure = {TODO()}
                 ),
             ))
         }
@@ -79,17 +130,17 @@ class GradesViewModel @Inject constructor(
 
     sealed interface Action {
         data object ChangeYear : Action
-
         data class ShowWeekGrades(
             val grades: List<GradeWeekEntity>
         ) : Action
-
         data class ShowSettings(
             val yearData: List<YearsEntity>?,
             val subjectData: List<SubjectEntity>?,
             val periodData: List<PeriodEntity>?,
         ) : Action
-
+        data class ShowYears(val yearData: List<YearsEntity>?) : Action
+        data class ShowSubjects(val subjectData: List<SubjectEntity>?) : Action
+        data class ShowPeriods(val periodData: List<PeriodEntity>?) : Action
         data object ChangePeriod : Action
         data object ChangeSubject : Action
     }

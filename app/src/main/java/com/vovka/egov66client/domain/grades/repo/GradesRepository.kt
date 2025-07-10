@@ -7,8 +7,10 @@ import com.vovka.egov66client.domain.grades.entity.YearsEntity
 
 interface GradesRepository {
     suspend fun getYears() : Result<List<YearsEntity>>
-    suspend fun getPeriods() : Result<List<PeriodEntity>>
-    suspend fun getSubjects() : Result<List<SubjectEntity>>
+    suspend fun getPeriods(
+        schoolYear: String = ""
+    ) : Result<List<PeriodEntity>>
+    suspend fun getSubjects(schoolYear: String = "") : Result<List<SubjectEntity>>
     suspend fun getCurrentYearText() : Result<String>
     suspend fun getCurrentYearId() : Result<String>
     suspend fun getWeekGrades(

@@ -73,12 +73,12 @@ class GradesRepositoryImpl @Inject constructor(
         return withContext(Dispatchers.IO){
             gradesNetworkDataSource.get().getWeekGrades(
                 Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
-                schoolYear = schoolYearId,
+                schoolYear = if(schoolYearId.isNullOrEmpty()) getCurrentYearId().getOrNull().toString() else schoolYearId,
                 periodId = periodId,
                 subjectId = subjectId,
                 studentId = studentStorageDataSource.get().studentId.first().toString(),
-                weekNumber = 2,
-                classId = getClassId().getOrNull().toString() //TODO Fix
+                weekNumber = weekNumber,
+                classId = "78f1159c-fb54-4ecf-8f3d-116eb0077748" //getClassId().getOrNull().toString() //TODO Fix
                 //TODO classId меняется каждый год, и нужно подогнать его под каждый год
             ).fold(
                 onSuccess = { value -> weekMapper.get().invoke(value) },
@@ -113,13 +113,14 @@ class GradesRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getPeriods(): Result<List<PeriodEntity>> {
+    override suspend fun getPeriods(
+        schoolYear: String
+    ): Result<List<PeriodEntity>> {
         return withContext(Dispatchers.IO) {
-
             gradesNetworkDataSource.get().getPeriods(
                 Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
                 studentId = studentStorageDataSource.get().studentId.first().toString(),
-                schoolYear = getCurrentYearText().getOrNull().toString()
+                schoolYear =  if(schoolYear.isEmpty()) getCurrentYearText().getOrNull().toString() else schoolYear
             ).fold(
                 onSuccess = { value -> periodMapper.get().invoke(value) },
                 onFailure = { error ->
@@ -130,12 +131,12 @@ class GradesRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getSubjects(): Result<List<SubjectEntity>> {
+    override suspend fun getSubjects(schoolYear: String): Result<List<SubjectEntity>> {
         return withContext(Dispatchers.IO) {
             gradesNetworkDataSource.get().getSubjects(
                 Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
                 studentId = studentStorageDataSource.get().studentId.first().toString(),
-                schoolYear = getCurrentYearText().getOrNull().toString()
+                schoolYear = if (schoolYear.isNullOrEmpty()) getCurrentYearText().getOrNull().toString() else schoolYear
             ).fold(
                 onSuccess = { value -> subjectsMapper.get().invoke(value) },
                 onFailure = { error ->
