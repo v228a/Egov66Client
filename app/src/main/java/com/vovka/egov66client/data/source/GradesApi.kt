@@ -24,7 +24,7 @@ interface GradesApi {
     ): SchoolYearResponse
 
     @GET("/api/estimate")
-    suspend fun getWeekGrades(
+    suspend fun getGrades(
         @Header("Authorization") Aiss2Auth: String,
         @Query("schoolYear") schoolYear: String,
         @Query("periodId") periodId: String,

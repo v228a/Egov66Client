@@ -19,12 +19,10 @@ import dagger.Reusable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.vovka.egov66client.data.mapper.grades.ClassesMapper
+import com.vovka.egov66client.data.mapper.grades.YearGradesMapper
+import com.vovka.egov66client.domain.grades.entity.year.YearGradeEntity
 
 @Reusable
 class GradesRepositoryImpl @Inject constructor(
@@ -34,7 +32,8 @@ class GradesRepositoryImpl @Inject constructor(
     private val subjectsMapper: Lazy<SubjectsMapper>,
     private val periodMapper: Lazy<PeriodMapper>,
     private val weekMapper: Lazy<WeekMapper>,
-    private val classesMapper: Lazy<ClassesMapper>
+    private val classesMapper: Lazy<ClassesMapper>,
+    private val yearGradesMapper: Lazy<YearGradesMapper>
 ): GradesRepository {
 
 
@@ -71,15 +70,15 @@ class GradesRepositoryImpl @Inject constructor(
         schoolYearId: String
     ): Result<List<GradeWeekEntity>> {
         return withContext(Dispatchers.IO){
-            gradesNetworkDataSource.get().getWeekGrades(
+            val schoolYear = if(schoolYearId.isNullOrEmpty()) getCurrentYearId().getOrNull().toString() else schoolYearId
+            gradesNetworkDataSource.get().getGrades(
                 Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
-                schoolYear = if(schoolYearId.isNullOrEmpty()) getCurrentYearId().getOrNull().toString() else schoolYearId,
+                schoolYear = schoolYear,
                 periodId = periodId,
                 subjectId = subjectId,
                 studentId = studentStorageDataSource.get().studentId.first().toString(),
                 weekNumber = weekNumber,
-                classId = "78f1159c-fb54-4ecf-8f3d-116eb0077748" //getClassId().getOrNull().toString() //TODO Fix
-                //TODO classId меняется каждый год, и нужно подогнать его под каждый год
+                classId = getClassId(schoolYear).getOrNull().toString()
             ).fold(
                 onSuccess = { value -> weekMapper.get().invoke(value) },
                 onFailure = { error -> Result.failure(error) }
@@ -87,15 +86,38 @@ class GradesRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getClassId(): Result<String> {
+    override suspend fun getClassId(schoolYear: String): Result<String> {
         return withContext(Dispatchers.IO){
             gradesNetworkDataSource.get().getClasses(
                 Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
                 studentId = studentStorageDataSource.get().studentId.first().toString(),
-                schoolYear = getCurrentYearId().getOrNull().toString()
+                schoolYear = schoolYear
             ).fold(
                 onSuccess = {value -> classesMapper.get().invoke(value)},
                 onFailure = { error -> Result.failure(error)}
+            )
+        }
+    }
+
+    override suspend fun getYearGrades(
+        periodId: String,
+        subjectId: String,
+        weekNumber: Int?,
+        schoolYearId: String
+    ): Result<List<YearGradeEntity>> {
+        return withContext(Dispatchers.IO){
+            val schoolYear = if(schoolYearId.isNullOrEmpty()) getCurrentYearId().getOrNull().toString() else schoolYearId
+            gradesNetworkDataSource.get().getGrades(
+                Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
+                schoolYear = schoolYear,
+                periodId = periodId,
+                subjectId = subjectId,
+                studentId = studentStorageDataSource.get().studentId.first().toString(),
+                weekNumber = weekNumber,
+                classId = getClassId(schoolYear).getOrNull().toString()
+            ).fold(
+                onSuccess = {value -> yearGradesMapper.get().invoke(value)},
+                onFailure = {error -> Result.failure(error)}
             )
         }
     }

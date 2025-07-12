@@ -10,8 +10,9 @@ class GetPeriodUseCase @Inject constructor(
     private val repo: GradesRepository
 
 ) {
-
-    suspend operator fun invoke(): Result<List<PeriodEntity>> {
-        return repo.getPeriods()
+    suspend operator fun invoke(schoolYear: String = ""): Result<List<PeriodEntity>> {
+        return repo.getPeriods(
+            schoolYear = schoolYear
+        )
     }
 }

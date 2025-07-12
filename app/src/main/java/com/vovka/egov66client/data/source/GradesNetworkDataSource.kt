@@ -23,7 +23,7 @@ class GradesNetworkDataSource @Inject constructor(
         return runCatching { api.getYears(Aiss2Auth, studentId) }
     }
 
-    suspend fun getWeekGrades(
+    suspend fun getGrades(
         Aiss2Auth: String,
         schoolYear: String,
         periodId: String,
@@ -33,7 +33,7 @@ class GradesNetworkDataSource @Inject constructor(
         classId: String
     ) : Result<GradesResponse>{
         return runCatching {
-            api.getWeekGrades(
+            api.getGrades(
                 Aiss2Auth = Aiss2Auth,
                 schoolYear = schoolYear,
                 periodId = periodId,

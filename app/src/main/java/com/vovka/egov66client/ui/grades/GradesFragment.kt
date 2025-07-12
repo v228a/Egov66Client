@@ -35,85 +35,15 @@ class GradesFragment : Fragment(com.vovka.egov66client.R.layout.fragment_grades)
     private fun initCallback() {
         binding.gradesRecycler.layoutManager = LinearLayoutManager(requireContext())
     }
-
+    //Первое фаза - загрузка настроек
+    //Вторая фаза - загрузка настроек с настроект
+    //Год - фиксированный, от него меняется список предметов
+    //Когда менется год, нужно менять
+    //3 возможных recycler - недельный, периодичный, итоговый
+    //Периодичный - полугодие, четверть
 
 
     private fun subscribe() {
-        viewModel.action.collectWhenStarted(this) { action ->
-            when(action) {
-                GradesViewModel.Action.ChangePeriod -> TODO()
-                GradesViewModel.Action.ChangeSubject -> TODO()
-                GradesViewModel.Action.ChangeYear -> TODO()
-                is GradesViewModel.Action.ShowYears -> {
-                    val yearData = action.yearData
-                    if (!yearData.isNullOrEmpty()){
-                        binding.yearDropDown.setAdapter(ArrayAdapter(
-                            requireContext(),
-                            android.R.layout.simple_dropdown_item_1line,
-                            (yearData.map { it.name })
-                        ))
-                        binding.yearDropDown.setText(yearData.map { it.name }.get(0),false)
-                        binding.yearDropDown.setOnItemClickListener { parent, view, position, id ->
-                            // Тригерим обновление предметов для выбранного года
-                            viewModel.loadSubjects(yearData[position].name.replace("/","-"))
-//                            // Сбросить и очистить выпадающий список предметов
-                            binding.subjectDropDown.setAdapter(ArrayAdapter(
-                                requireContext(),
-                                android.R.layout.simple_dropdown_item_1line,
-                                listOf<String>()
-                            ))
-                            binding.subjectDropDown.setText("", false)
-                        }
-                    }
-                }
-                is GradesViewModel.Action.ShowSubjects -> {
-                    val subjectsData = action.subjectData
-                    if (!subjectsData.isNullOrEmpty()){
-                        binding.subjectDropDown.setAdapter(ArrayAdapter(
-                            requireContext(),
-                            android.R.layout.simple_dropdown_item_1line,
-                            (subjectsData.map { it.name })
-                        ))
-                        binding.subjectDropDown.setText(subjectsData.map { it.name }.get(0),false)
-                    }
-                }
-                is GradesViewModel.Action.ShowPeriods -> {
-                    val periodData = action.periodData
-                    if (!periodData.isNullOrEmpty()){
-                        binding.periodDropDown.setAdapter(ArrayAdapter(
-                            requireContext(),
-                            android.R.layout.simple_dropdown_item_1line,
-                            (periodData.map { it.name })
-                        ))
-                        binding.periodDropDown.setText(periodData.map { it.name }.get(0),false)
-                    }
-                }
-                is GradesViewModel.Action.ShowSettings -> {
-                    // All settings loaded, now trigger grades loading
-                    val yearData = action.yearData
-                    val periodData = action.periodData
-                    val subjectsData = action.subjectData
-                    // Optionally, set dropdowns again if needed
-                    viewModel.loadWeekGrades(
-                        // pass appropriate ids if needed
-                    )
-                }
-                is GradesViewModel.Action.ShowWeekGrades -> {
-                    binding.gradesRecycler.adapter = GradesWeekAdapter(action.grades)
-                }
-            }
-        }
-
-
-
-
-
-
-
-
-
-
-
 
     }
 
