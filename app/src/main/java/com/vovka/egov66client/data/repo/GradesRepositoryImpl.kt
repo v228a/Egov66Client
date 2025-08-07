@@ -122,6 +122,15 @@ class GradesRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getPeriodGrades(
+        periodId: String,
+        subjectId: String,
+        weekNumber: Int?,
+        schoolYearId: String
+    ): Result<List<YearGradeEntity>> {
+        TODO("Not yet implemented")
+    }
+
 
     override suspend fun getYears(): Result<List<YearsEntity>> {
         return withContext(Dispatchers.IO) {

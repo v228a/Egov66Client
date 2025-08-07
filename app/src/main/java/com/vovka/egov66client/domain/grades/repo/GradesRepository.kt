@@ -19,14 +19,14 @@ interface GradesRepository {
 
     suspend fun getCurrentYearId() : Result<String>
 
+    suspend fun getClassId(schoolYear: String) : Result<String>
+
     suspend fun getWeekGrades(
         periodId: String,
         subjectId: String,
         weekNumber: Int?,
         schoolYearId: String
     ): Result<List<GradeWeekEntity>>
-
-    suspend fun getClassId(schoolYear: String) : Result<String>
 
     suspend fun getYearGrades(
         periodId: String,
@@ -35,11 +35,11 @@ interface GradesRepository {
         schoolYearId: String
     ): Result<List<YearGradeEntity>>
 
+    suspend fun getPeriodGrades(
+        periodId: String,
+        subjectId: String,
+        weekNumber: Int?,
+        schoolYearId: String
+    ): Result<List<YearGradeEntity>>
 
-//    suspend fun getPeriodGrade(
-//        periodId: String,
-//        subjectId: String,
-//        weekNumber: Int?,
-//        schoolYearId: String
-//    )
 }

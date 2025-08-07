@@ -41,15 +41,22 @@ class GradesViewModel @Inject constructor(
     //Используется на холодную
     fun loadAllSettings(){
         viewModelScope.launch {
+            _action.emit(Action.UpdatePeriod(getPeriodUseCase.invoke().getOrNull()))
             _action.emit(Action.UpdateYear(getSchoolYearsUseCase.invoke().getOrNull()))
             _action.emit(Action.UpdateSubject(getSubjectsUseCase.invoke().getOrNull()))
-            _action.emit(Action.UpdatePeriod(getPeriodUseCase.invoke().getOrNull()))
         }
     }
 
     fun getCurrentYear(): YearsEntity {
         return runBlocking {
             getCurrentYearUseCase.invoke().getOrNull()!!
+        }
+    }
+
+    fun updatePeriodAndSubject(yearText: String){
+        viewModelScope.launch {
+            _action.emit(Action.UpdateSubject(getSubjectsUseCase.invoke(yearText).getOrNull()))
+            _action.emit(Action.UpdatePeriod(getPeriodUseCase.invoke(yearText).getOrNull()))
         }
     }
 

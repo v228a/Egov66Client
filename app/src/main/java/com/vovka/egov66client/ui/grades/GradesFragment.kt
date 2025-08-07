@@ -1,6 +1,8 @@
 package com.vovka.egov66client.ui.grades
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
@@ -44,6 +46,17 @@ class GradesFragment : Fragment(com.vovka.egov66client.R.layout.fragment_grades)
 
 
     private fun subscribe() {
+        binding.yearDropDown.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                Log.d("yearDropDown", "Текст изменён: $s")
+                viewModel.updatePeriodAndSubject(s.toString())
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
         viewModel.action.collectWhenStarted(this) { action ->
             when(action){
                 is GradesViewModel.Action.UpdatePeriod -> {
