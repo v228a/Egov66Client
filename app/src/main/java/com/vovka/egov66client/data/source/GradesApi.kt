@@ -53,6 +53,7 @@ interface GradesApi {
         @Header("Authorization") Aiss2Auth: String,
         @Query("studentId") studentId: String,
         @Query("schoolYear") schoolYear: String,
+        @Query("classId") classId: String,
         @Header("User-Agent") userAgent: String = "Mozilla/5.0",
         @Header("Accept") accept: String = "*/*",
         @Header("Accept-Encoding") acceptEncoding: String = "gzip, deflate, br"
@@ -63,6 +64,7 @@ interface GradesApi {
         @Header("Authorization") Aiss2Auth: String,
         @Query("studentId") studentId: String,
         @Query("schoolYear") schoolYear: String,
+        @Query("classId") classId: String,
         @Header("User-Agent") userAgent: String = "Mozilla/5.0",
         @Header("Accept") accept: String = "*/*",
         @Header("Accept-Encoding") acceptEncoding: String = "gzip, deflate, br"

@@ -45,11 +45,17 @@ class GradesNetworkDataSource @Inject constructor(
         }
     }
 
-    suspend fun getSubjects(Aiss2Auth: String, studentId: String,schoolYear: String): Result<SubjectResponse> {
+    suspend fun getSubjects(
+        Aiss2Auth: String,
+        studentId: String,
+        schoolYear: String,
+        classId: String): Result<SubjectResponse> {
         return runCatching { api.getSubjects(
             Aiss2Auth = Aiss2Auth,
             studentId = studentId,
-            schoolYear = schoolYear
+            schoolYear = schoolYear,
+            classId = classId
+
         ) }
     }
 
@@ -63,11 +69,17 @@ class GradesNetworkDataSource @Inject constructor(
         }
     }
 
-    suspend fun getPeriods(Aiss2Auth: String, studentId: String,schoolYear: String): Result<PeriodsResponse> {
+    suspend fun getPeriods(
+        Aiss2Auth: String,
+        studentId: String,
+        schoolYear: String,
+        classId: String
+    ): Result<PeriodsResponse> {
         return runCatching { api.getPeriods(
             Aiss2Auth = Aiss2Auth,
             studentId = studentId,
-            schoolYear = schoolYear
+            schoolYear = schoolYear,
+            classId = classId
         )  }
     }
 

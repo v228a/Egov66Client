@@ -57,7 +57,7 @@ class GradesRepositoryImpl @Inject constructor(
                 Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
                 studentId = studentStorageDataSource.get().studentId.first().toString(),
             ).fold(
-                onSuccess = { value -> Result.success(value.currentYear.text) },
+                onSuccess = { value -> Result.success(value.currentYear.id) },
                 onFailure = { error -> Result.failure(error) }
             )
         }
@@ -138,11 +138,12 @@ class GradesRepositoryImpl @Inject constructor(
     override suspend fun getPeriods(
         schoolYear: String
     ): Result<List<PeriodEntity>> {
-        return withContext(Dispatchers.IO) {
-            gradesNetworkDataSource.get().getPeriods(
+        val year = if (schoolYear.isEmpty()) getCurrentYearId().getOrNull().toString() else schoolYear
+        return withContext(Dispatchers.IO) { gradesNetworkDataSource.get().getPeriods(
                 Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
                 studentId = studentStorageDataSource.get().studentId.first().toString(),
-                schoolYear =  if(schoolYear.isEmpty()) getCurrentYearText().getOrNull().toString() else schoolYear
+                schoolYear = year,
+                classId = getClassId(year).getOrNull().toString()
             ).fold(
                 onSuccess = { value -> periodMapper.get().invoke(value) },
                 onFailure = { error ->
@@ -155,10 +156,12 @@ class GradesRepositoryImpl @Inject constructor(
 
     override suspend fun getSubjects(schoolYear: String): Result<List<SubjectEntity>> {
         return withContext(Dispatchers.IO) {
+            val year = if (schoolYear.isEmpty()) getCurrentYearId().getOrNull().toString() else schoolYear
             gradesNetworkDataSource.get().getSubjects(
                 Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
                 studentId = studentStorageDataSource.get().studentId.first().toString(),
-                schoolYear = if (schoolYear.isNullOrEmpty()) getCurrentYearText().getOrNull().toString() else schoolYear
+                schoolYear = year,
+                classId = getClassId(year).getOrNull().toString(),
             ).fold(
                 onSuccess = { value -> subjectsMapper.get().invoke(value) },
                 onFailure = { error ->

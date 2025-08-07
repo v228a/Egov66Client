@@ -44,8 +44,52 @@ class GradesFragment : Fragment(com.vovka.egov66client.R.layout.fragment_grades)
 
 
     private fun subscribe() {
+        viewModel.action.collectWhenStarted(this) { action ->
+            when(action){
+                is GradesViewModel.Action.UpdatePeriod -> {
+                    val periodData = action.periodData
+                    if (!periodData.isNullOrEmpty()){
+                        binding.periodDropDown.setAdapter(ArrayAdapter(
+                            requireContext(),
+                            android.R.layout.simple_dropdown_item_1line,
+                            (periodData.map { it.name })
+                        ))
+                        binding.periodDropDown.setText(periodData.map { it.name }.get(0),false)
+                    }else{
+                        Log.d("UpdatePeriod","PeriodData in null")
+                    }
+                }
+                is GradesViewModel.Action.UpdateSubject -> {
+                    Log.d("UpdateSubject","I am working")
+                    Log.d("UpdateSubject",action.subjectData!!.isEmpty().toString())
+                    val subjectData = action.subjectData
+                    if (!subjectData.isNullOrEmpty()){
+                        binding.subjectDropDown.setAdapter(ArrayAdapter(
+                            requireContext(),
+                            android.R.layout.simple_dropdown_item_1line,
+                            (subjectData.map { it.name })
+                        ))
+                        binding.subjectDropDown.setText(subjectData.map { it.name }.get(0),false)
+                    }
+                }
+                
+                is GradesViewModel.Action.UpdateYear -> {
+                    Log.d("UpdateYear","I am working")
+                    val yearData = action.yearData
+                    if (!yearData.isNullOrEmpty()){
+                        binding.yearDropDown.setAdapter(ArrayAdapter(
+                            requireContext(),
+                            android.R.layout.simple_dropdown_item_1line,
+                            (yearData.map { it.name })
+                        ))
+                        val index = yearData.indexOf(yearData.find { it.id == viewModel.getCurrentYear().id})
+                        binding.yearDropDown.setText(yearData.map { it.name }.get(index),false)
+                    }
+                }
+            }
+        }
 
-    }
+        }
 
     override fun onDestroyView() {
         super.onDestroyView()

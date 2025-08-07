@@ -1,27 +1,22 @@
 package com.vovka.egov66client.ui.grades
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.vovka.egov66client.core.Constants
+import com.vovka.egov66client.domain.grades.GetCurrentYearUseCase
 import com.vovka.egov66client.domain.grades.GetPeriodUseCase
 import com.vovka.egov66client.domain.grades.GetSchoolYearsUseCase
 import com.vovka.egov66client.domain.grades.GetSubjectsUseCase
 import com.vovka.egov66client.domain.grades.GetWeekGradesUseCase
-import com.vovka.egov66client.domain.grades.entity.GradeWeekEntity
 import com.vovka.egov66client.domain.grades.entity.PeriodEntity
 import com.vovka.egov66client.domain.grades.entity.SubjectEntity
 import com.vovka.egov66client.domain.grades.entity.YearsEntity
-import com.vovka.egov66client.ui.login.LoginViewModel
-import com.vovka.egov66client.ui.profile.ProfileViewModel
 import com.vovka.egov66client.utils.MutablePublishFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 
@@ -31,6 +26,7 @@ class GradesViewModel @Inject constructor(
     val getSchoolYearsUseCase: GetSchoolYearsUseCase,
     val getSubjectsUseCase: GetSubjectsUseCase,
     val getPeriodUseCase: GetPeriodUseCase,
+    val getCurrentYearUseCase: GetCurrentYearUseCase,
     val getWeekGradesUseCase: GetWeekGradesUseCase
 ) : ViewModel() {
 
@@ -41,16 +37,42 @@ class GradesViewModel @Inject constructor(
     private val _state = MutableStateFlow<State>(initialState)
     val state = _state.asStateFlow()
 
-    sealed interface State {
 
+    //Используется на холодную
+    fun loadAllSettings(){
+        viewModelScope.launch {
+            _action.emit(Action.UpdateYear(getSchoolYearsUseCase.invoke().getOrNull()))
+            _action.emit(Action.UpdateSubject(getSubjectsUseCase.invoke().getOrNull()))
+            _action.emit(Action.UpdatePeriod(getPeriodUseCase.invoke().getOrNull()))
+        }
+    }
+
+    fun getCurrentYear(): YearsEntity {
+        return runBlocking {
+            getCurrentYearUseCase.invoke().getOrNull()!!
+        }
+    }
+
+
+    //Первое фаза - загрузка настроек
+    //Вторая фаза - загрузка настроек с настроект
+    //Год - фиксированный, от него меняется список предметов
+    //Когда менется год, нужно менять
+    //3 возможных recycler - недельный, периодичный, итоговый
+    //Периодичный - полугодие, четверть
+    sealed interface State {
+        data object LoadingSettings : State
+        data object LoadingGrades: State
     }
 
     sealed interface Action {
 
-
+        data class UpdateSubject(val subjectData: List<SubjectEntity>?): Action
+        data class UpdateYear(val yearData: List<YearsEntity>?): Action
+        data class UpdatePeriod(val periodData: List<PeriodEntity>?): Action
     }
 
     companion object {
-        val initialState = State.SettingsLoad
+        val initialState = State.LoadingSettings
     }
 }
