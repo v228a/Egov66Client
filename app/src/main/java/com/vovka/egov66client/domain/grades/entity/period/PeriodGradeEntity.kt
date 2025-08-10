@@ -1,6 +1,6 @@
 package com.vovka.egov66client.domain.grades.entity.period
 
-class PeriodEntity(
+class PeriodGradeEntity(
     val name: String,
     val averageGrade: Double?,
     val averageWeightedGrade: Double?,

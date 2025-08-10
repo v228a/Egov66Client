@@ -12,7 +12,12 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.vovka.egov66client.databinding.FragmentGradesBinding
 import com.vovka.egov66client.domain.grades.entity.GradeWeekEntity
+import com.vovka.egov66client.domain.grades.entity.year.YearGradeEntity
 import com.vovka.egov66client.ui.grades.adapters.GradesWeekAdapter
+import com.vovka.egov66client.ui.grades.adapters.PeriodGradesAdapter
+import com.vovka.egov66client.ui.grades.adapters.YearGradesAdapter
+import com.vovka.egov66client.ui.grades.adapters.YearGradesCompactAdapter
+import com.vovka.egov66client.ui.grades.adapters.YearGradesSimpleAdapter
 import com.vovka.egov66client.utils.collectWhenStarted
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -45,14 +50,55 @@ class GradesFragment : Fragment(com.vovka.egov66client.R.layout.fragment_grades)
     //3 возможных recycler - недельный, периодичный, итоговый
     //Периодичный - полугодие, четверть
 
+    private fun loadGradesIfAllFieldsFilled() {
+        val yearText = binding.yearDropDown.text.toString()
+        val periodText = binding.periodDropDown.text.toString()
+        val subjectText = binding.subjectDropDown.text.toString()
+        
+        if (yearText.isNotEmpty() && periodText.isNotEmpty() && subjectText.isNotEmpty()) {
+            viewModel.loadGrades(
+                subjectId = viewModel.getSubjectIdByName(subjectText),
+                periodId = viewModel.getPeriodIdByName(periodText),
+                yearId = viewModel.getYearIdByName(yearText),
+                weekNumber = null
+            )
+        }
+        Log.d("GradesFragmnet","Я работаю")
+    }
 
     private fun subscribe() {
+        // TextWatcher для года
         binding.yearDropDown.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 Log.d("yearDropDown", "Текст изменён: $s")
                 viewModel.updatePeriodAndSubject(s.toString())
+                loadGradesIfAllFieldsFilled()
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        // TextWatcher для периода
+        binding.periodDropDown.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                Log.d("periodDropDown", "Текст изменён: $s")
+                loadGradesIfAllFieldsFilled()
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        // TextWatcher для предмета
+        binding.subjectDropDown.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                Log.d("subjectDropDown", "Текст изменён: $s")
+                loadGradesIfAllFieldsFilled()
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -101,9 +147,21 @@ class GradesFragment : Fragment(com.vovka.egov66client.R.layout.fragment_grades)
                     }
                 }
 
-                is GradesViewModel.Action.LoadPeriodGrades -> TODO()
-                is GradesViewModel.Action.LoadWeekGrades -> TODO()
-                is GradesViewModel.Action.LoadYearGrades -> TODO()
+                is GradesViewModel.Action.LoadPeriodGrades -> {
+                    Log.d("LoadPeriodGrades", "Загружены периодические оценки: ${action.periodData.size}")
+                    val adapter = PeriodGradesAdapter(action.periodData)
+                    binding.gradesRecycler.adapter = adapter
+                }
+                is GradesViewModel.Action.LoadWeekGrades -> {
+                    Log.d("LoadWeekGrades", "Загружены недельные оценки: ${action.weekData.size}")
+                    val adapter = GradesWeekAdapter(action.weekData)
+                    binding.gradesRecycler.adapter = adapter
+                }
+                is GradesViewModel.Action.LoadYearGrades -> {
+                    Log.d("LoadYearGrades", "Загружены годовые оценки: ${action.yearData.size}")
+                    val adapter = YearGradesSimpleAdapter(action.yearData)
+                    binding.gradesRecycler.adapter = adapter
+                }
             }
         }
 

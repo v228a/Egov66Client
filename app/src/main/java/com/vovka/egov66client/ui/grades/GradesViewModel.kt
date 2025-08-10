@@ -1,5 +1,6 @@
 package com.vovka.egov66client.ui.grades
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vovka.egov66client.domain.grades.GetCurrentYearUseCase
@@ -11,6 +12,7 @@ import com.vovka.egov66client.domain.grades.entity.GradeWeekEntity
 import com.vovka.egov66client.domain.grades.entity.PeriodEntity
 import com.vovka.egov66client.domain.grades.entity.SubjectEntity
 import com.vovka.egov66client.domain.grades.entity.YearsEntity
+import com.vovka.egov66client.domain.grades.entity.period.PeriodGradeEntity
 import com.vovka.egov66client.domain.grades.entity.year.YearGradeEntity
 import com.vovka.egov66client.utils.MutablePublishFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -40,13 +42,25 @@ class GradesViewModel @Inject constructor(
     private val _state = MutableStateFlow<State>(initialState)
     val state = _state.asStateFlow()
 
+    // Кэш для хранения данных
+    private var cachedSubjects: List<SubjectEntity>? = null
+    private var cachedPeriods: List<PeriodEntity>? = null
+    private var cachedYears: List<YearsEntity>? = null
 
     //Используется на холодную
     fun loadAllSettings(){
         viewModelScope.launch {
-            _action.emit(Action.UpdatePeriod(getPeriodUseCase.invoke().getOrNull()))
-            _action.emit(Action.UpdateYear(getSchoolYearsUseCase.invoke().getOrNull()))
-            _action.emit(Action.UpdateSubject(getSubjectsUseCase.invoke().getOrNull()))
+            val periods = getPeriodUseCase.invoke().getOrNull()
+            val years = getSchoolYearsUseCase.invoke().getOrNull()
+            val subjects = getSubjectsUseCase.invoke().getOrNull()
+            
+            cachedPeriods = periods
+            cachedYears = years
+            cachedSubjects = subjects
+            
+            _action.emit(Action.UpdatePeriod(periods))
+            _action.emit(Action.UpdateYear(years))
+            _action.emit(Action.UpdateSubject(subjects))
         }
     }
 
@@ -58,9 +72,27 @@ class GradesViewModel @Inject constructor(
 
     fun updatePeriodAndSubject(yearText: String){
         viewModelScope.launch {
-            _action.emit(Action.UpdateSubject(getSubjectsUseCase.invoke(yearText).getOrNull()))
-            _action.emit(Action.UpdatePeriod(getPeriodUseCase.invoke(yearText).getOrNull()))
+            val subjects = getSubjectsUseCase.invoke(yearText).getOrNull()
+            val periods = getPeriodUseCase.invoke(yearText).getOrNull()
+            
+            cachedSubjects = subjects
+            cachedPeriods = periods
+            
+            _action.emit(Action.UpdateSubject(subjects))
+            _action.emit(Action.UpdatePeriod(periods))
         }
+    }
+
+    fun getSubjectIdByName(name: String): String {
+        return cachedSubjects?.find { it.name == name }?.id ?: ""
+    }
+
+    fun getPeriodIdByName(name: String): String {
+        return cachedPeriods?.find { it.name == name }?.id ?: ""
+    }
+
+    fun getYearIdByName(name: String): String {
+        return cachedYears?.find { it.name == name }?.id ?: ""
     }
 
     fun loadGrades(
@@ -70,6 +102,10 @@ class GradesViewModel @Inject constructor(
         weekNumber: Int?
     ) {
         viewModelScope.launch {
+            Log.d("subjectId",subjectId)
+            Log.d("periodID",periodId)
+            Log.d("yearID",yearId)
+            Log.d("weekNumber",weekNumber.toString())
             getGradesUseCase.invoke(
                 periodId = periodId,
                 subjectId = subjectId,
@@ -85,7 +121,7 @@ class GradesViewModel @Inject constructor(
                             _action.emit(Action.LoadYearGrades(it.yearGrades))
                         }
                         it.periodGrades != null -> {
-//                            _action.emit(Action.LoadPeriodGrades(it.periodGrades)
+                            _action.emit(Action.LoadPeriodGrades(it.periodGrades))
                         }
                         else -> {
                             // Все три null — ошибка
@@ -94,7 +130,7 @@ class GradesViewModel @Inject constructor(
                     }
 
                 },
-                onFailure = { TODO() }
+                onFailure = { Log.d("GradesViewModel",it.localizedMessage) }
 
             )
         }
@@ -114,8 +150,8 @@ class GradesViewModel @Inject constructor(
 
     sealed interface Action {
         data class LoadYearGrades(val yearData: List<YearGradeEntity>) : Action
-        data class LoadPeriodGrades(val yearData: List<PeriodEntity>) : Action
-        data class LoadWeekGrades(val yearData: List<GradeWeekEntity>) : Action
+        data class LoadPeriodGrades(val periodData: List<PeriodGradeEntity>) : Action
+        data class LoadWeekGrades(val weekData: List<GradeWeekEntity>) : Action
         data class UpdateSubject(val subjectData: List<SubjectEntity>?): Action
         data class UpdateYear(val yearData: List<YearsEntity>?): Action
         data class UpdatePeriod(val periodData: List<PeriodEntity>?): Action

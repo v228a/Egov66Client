@@ -1,11 +1,21 @@
 package com.vovka.egov66client.data.mapper.grades
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.vovka.egov66client.data.dto.grades.GradesResponse
 import com.vovka.egov66client.domain.grades.entity.GradeWeekEntity
 import com.vovka.egov66client.domain.grades.entity.GradesEntity
+import com.vovka.egov66client.domain.grades.entity.period.PeriodGradeEntity
+import com.vovka.egov66client.domain.grades.entity.period.PeriodLessonGradeEntity
+import com.vovka.egov66client.domain.grades.entity.year.YearGradeEntity
+import java.time.LocalDateTime
+import java.time.ZoneId
 import javax.inject.Inject
 
-class GradesMapper @Inject constructor() {
+class GradesMapper @Inject constructor(
+    private val yearGradesMapper: YearGradesMapper
+) {
+    @RequiresApi(Build.VERSION_CODES.O)//TODO fix
     operator fun invoke(model: GradesResponse): Result<GradesEntity> {
         return runCatching {
             when {
@@ -37,30 +47,45 @@ class GradesMapper @Inject constructor() {
                 }
 
                 model.yearGradesTable != null -> {
-                    val yearTable = model.yearGradesTable
-                    TODO()
-//
-//                    GradesEntity(
-//                        periodGrades = null,
-//                        yearGrades = yearGrades,
-//                        weekGrades = null
-//                    )
+                    val yearGrades = yearGradesMapper.invoke(model).getOrNull() ?: emptyList()
+                    
+                    GradesEntity(
+                        periodGrades = null,
+                        yearGrades = yearGrades,
+                        weekGrades = null
+                    )
                 }
 
                 model.periodGradesTable != null -> {
                     val periodTable = model.periodGradesTable
-                    TODO()
-//
-//                    GradesEntity(
-//                        periodGrades = periodGrades,
-//                        yearGrades = null,
-//                        weekGrades = null
-//                    )
+                    val periodGrades = periodTable.disciplines.map { discipline ->
+                        PeriodGradeEntity(
+                            name = discipline.name,
+                            averageGrade = discipline.averageGrade,
+                            averageWeightedGrade = discipline.averageWeightedGrade,
+                            totalGrade = discipline.totalGrade,
+                            grades = discipline.grades.map { grade ->
+                                PeriodLessonGradeEntity(
+                                    presence = grade.presence,
+                                    lessonId = grade.lessonId,
+                                    date = grade.date.toInstant()
+                                        .atZone(ZoneId.systemDefault())
+                                        .toLocalDateTime(),
+                                    grades = grade.grades
+                                )
+                            }
+                        )
+                    }
+
+                    GradesEntity(
+                        periodGrades = periodGrades,
+                        yearGrades = null,
+                        weekGrades = null
+                    )
                 }
 
                 else -> error("Все таблицы null")
             }
         }
-
     }
 }

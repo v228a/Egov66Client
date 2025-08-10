@@ -30,7 +30,6 @@ class GradesRepositoryImpl @Inject constructor(
     private val periodMapper: Lazy<PeriodMapper>,
     private val gradesMapper: Lazy<GradesMapper>,
     private val classesMapper: Lazy<ClassesMapper>,
-    private val yearGradesMapper: Lazy<YearGradesMapper>
 ): GradesRepository {
 
 
