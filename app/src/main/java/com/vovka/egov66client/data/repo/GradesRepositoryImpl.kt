@@ -1,15 +1,15 @@
 package com.vovka.egov66client.data.repo
 
 import android.util.Log
-import com.vovka.egov66client.data.mapper.HomeWorkMapper
+import com.vovka.egov66client.data.mapper.grades.ClassesMapper
+import com.vovka.egov66client.data.mapper.grades.GradesMapper
 import com.vovka.egov66client.data.mapper.grades.PeriodMapper
 import com.vovka.egov66client.data.mapper.grades.SubjectsMapper
-import com.vovka.egov66client.data.mapper.grades.WeekMapper
+import com.vovka.egov66client.data.mapper.grades.YearGradesMapper
 import com.vovka.egov66client.data.mapper.grades.YearMapper
 import com.vovka.egov66client.data.source.GradesNetworkDataSource
-import com.vovka.egov66client.data.source.HomeWorkNetworkDataSource
 import com.vovka.egov66client.data.source.StudentStorageDataSource
-import com.vovka.egov66client.domain.grades.entity.GradeWeekEntity
+import com.vovka.egov66client.domain.grades.entity.GradesEntity
 import com.vovka.egov66client.domain.grades.entity.PeriodEntity
 import com.vovka.egov66client.domain.grades.entity.SubjectEntity
 import com.vovka.egov66client.domain.grades.entity.YearsEntity
@@ -20,9 +20,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import com.vovka.egov66client.data.mapper.grades.ClassesMapper
-import com.vovka.egov66client.data.mapper.grades.YearGradesMapper
-import com.vovka.egov66client.domain.grades.entity.year.YearGradeEntity
 
 @Reusable
 class GradesRepositoryImpl @Inject constructor(
@@ -31,7 +28,7 @@ class GradesRepositoryImpl @Inject constructor(
     private val yearMapper: Lazy<YearMapper>,
     private val subjectsMapper: Lazy<SubjectsMapper>,
     private val periodMapper: Lazy<PeriodMapper>,
-    private val weekMapper: Lazy<WeekMapper>,
+    private val gradesMapper: Lazy<GradesMapper>,
     private val classesMapper: Lazy<ClassesMapper>,
     private val yearGradesMapper: Lazy<YearGradesMapper>
 ): GradesRepository {
@@ -63,29 +60,6 @@ class GradesRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getWeekGrades(
-        periodId: String,
-        subjectId: String,
-        weekNumber: Int?,
-        schoolYearId: String
-    ): Result<List<GradeWeekEntity>> {
-        return withContext(Dispatchers.IO){
-            val schoolYear = if(schoolYearId.isNullOrEmpty()) getCurrentYearId().getOrNull().toString() else schoolYearId
-            gradesNetworkDataSource.get().getGrades(
-                Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
-                schoolYear = schoolYear,
-                periodId = periodId,
-                subjectId = subjectId,
-                studentId = studentStorageDataSource.get().studentId.first().toString(),
-                weekNumber = weekNumber,
-                classId = getClassId(schoolYear).getOrNull().toString()
-            ).fold(
-                onSuccess = { value -> weekMapper.get().invoke(value) },
-                onFailure = { error -> Result.failure(error) }
-            )
-        }
-    }
-
     override suspend fun getClassId(schoolYear: String): Result<String> {
         return withContext(Dispatchers.IO){
             gradesNetworkDataSource.get().getClasses(
@@ -99,12 +73,12 @@ class GradesRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getYearGrades(
+    override suspend fun getGrades(
         periodId: String,
         subjectId: String,
         weekNumber: Int?,
         schoolYearId: String
-    ): Result<List<YearGradeEntity>> {
+    ): Result<GradesEntity> {
         return withContext(Dispatchers.IO){
             val schoolYear = if(schoolYearId.isNullOrEmpty()) getCurrentYearId().getOrNull().toString() else schoolYearId
             gradesNetworkDataSource.get().getGrades(
@@ -116,20 +90,13 @@ class GradesRepositoryImpl @Inject constructor(
                 weekNumber = weekNumber,
                 classId = getClassId(schoolYear).getOrNull().toString()
             ).fold(
-                onSuccess = {value -> yearGradesMapper.get().invoke(value)},
-                onFailure = {error -> Result.failure(error)}
+                onSuccess = { value -> gradesMapper.get().invoke(value) },
+                onFailure = { error -> Result.failure(error) }
             )
         }
     }
 
-    override suspend fun getPeriodGrades(
-        periodId: String,
-        subjectId: String,
-        weekNumber: Int?,
-        schoolYearId: String
-    ): Result<List<YearGradeEntity>> {
-        TODO("Not yet implemented")
-    }
+
 
 
     override suspend fun getYears(): Result<List<YearsEntity>> {

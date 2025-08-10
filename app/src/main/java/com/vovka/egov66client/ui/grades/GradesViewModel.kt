@@ -3,13 +3,15 @@ package com.vovka.egov66client.ui.grades
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vovka.egov66client.domain.grades.GetCurrentYearUseCase
+import com.vovka.egov66client.domain.grades.GetGradesUseCase
 import com.vovka.egov66client.domain.grades.GetPeriodUseCase
 import com.vovka.egov66client.domain.grades.GetSchoolYearsUseCase
 import com.vovka.egov66client.domain.grades.GetSubjectsUseCase
-import com.vovka.egov66client.domain.grades.GetWeekGradesUseCase
+import com.vovka.egov66client.domain.grades.entity.GradeWeekEntity
 import com.vovka.egov66client.domain.grades.entity.PeriodEntity
 import com.vovka.egov66client.domain.grades.entity.SubjectEntity
 import com.vovka.egov66client.domain.grades.entity.YearsEntity
+import com.vovka.egov66client.domain.grades.entity.year.YearGradeEntity
 import com.vovka.egov66client.utils.MutablePublishFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,8 +28,9 @@ class GradesViewModel @Inject constructor(
     val getSchoolYearsUseCase: GetSchoolYearsUseCase,
     val getSubjectsUseCase: GetSubjectsUseCase,
     val getPeriodUseCase: GetPeriodUseCase,
+    val getGradesUseCase: GetGradesUseCase,
     val getCurrentYearUseCase: GetCurrentYearUseCase,
-    val getWeekGradesUseCase: GetWeekGradesUseCase
+
 ) : ViewModel() {
 
 
@@ -60,6 +63,43 @@ class GradesViewModel @Inject constructor(
         }
     }
 
+    fun loadGrades(
+        subjectId: String,
+        periodId: String,
+        yearId: String,
+        weekNumber: Int?
+    ) {
+        viewModelScope.launch {
+            getGradesUseCase.invoke(
+                periodId = periodId,
+                subjectId = subjectId,
+                weekNumber = weekNumber,
+                schoolYearId = yearId
+            ).fold(
+                onSuccess = {
+                    when {
+                        it.weekGrades != null -> {
+                            _action.emit(Action.LoadWeekGrades(it.weekGrades))
+                        }
+                        it.yearGrades != null -> {
+                            _action.emit(Action.LoadYearGrades(it.yearGrades))
+                        }
+                        it.periodGrades != null -> {
+//                            _action.emit(Action.LoadPeriodGrades(it.periodGrades)
+                        }
+                        else -> {
+                            // Все три null — ошибка
+                            error("Все таблицы null")
+                        }
+                    }
+
+                },
+                onFailure = { TODO() }
+
+            )
+        }
+    }
+
 
     //Первое фаза - загрузка настроек
     //Вторая фаза - загрузка настроек с настроект
@@ -73,7 +113,9 @@ class GradesViewModel @Inject constructor(
     }
 
     sealed interface Action {
-
+        data class LoadYearGrades(val yearData: List<YearGradeEntity>) : Action
+        data class LoadPeriodGrades(val yearData: List<PeriodEntity>) : Action
+        data class LoadWeekGrades(val yearData: List<GradeWeekEntity>) : Action
         data class UpdateSubject(val subjectData: List<SubjectEntity>?): Action
         data class UpdateYear(val yearData: List<YearsEntity>?): Action
         data class UpdatePeriod(val periodData: List<PeriodEntity>?): Action

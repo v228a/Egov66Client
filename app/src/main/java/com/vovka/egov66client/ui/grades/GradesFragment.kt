@@ -1,5 +1,6 @@
 package com.vovka.egov66client.ui.grades
 
+import android.R
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -64,7 +65,7 @@ class GradesFragment : Fragment(com.vovka.egov66client.R.layout.fragment_grades)
                     if (!periodData.isNullOrEmpty()){
                         binding.periodDropDown.setAdapter(ArrayAdapter(
                             requireContext(),
-                            android.R.layout.simple_dropdown_item_1line,
+                            R.layout.simple_dropdown_item_1line,
                             (periodData.map { it.name })
                         ))
                         binding.periodDropDown.setText(periodData.map { it.name }.get(0),false)
@@ -79,7 +80,7 @@ class GradesFragment : Fragment(com.vovka.egov66client.R.layout.fragment_grades)
                     if (!subjectData.isNullOrEmpty()){
                         binding.subjectDropDown.setAdapter(ArrayAdapter(
                             requireContext(),
-                            android.R.layout.simple_dropdown_item_1line,
+                            R.layout.simple_dropdown_item_1line,
                             (subjectData.map { it.name })
                         ))
                         binding.subjectDropDown.setText(subjectData.map { it.name }.get(0),false)
@@ -92,13 +93,17 @@ class GradesFragment : Fragment(com.vovka.egov66client.R.layout.fragment_grades)
                     if (!yearData.isNullOrEmpty()){
                         binding.yearDropDown.setAdapter(ArrayAdapter(
                             requireContext(),
-                            android.R.layout.simple_dropdown_item_1line,
+                            R.layout.simple_dropdown_item_1line,
                             (yearData.map { it.name })
                         ))
                         val index = yearData.indexOf(yearData.find { it.id == viewModel.getCurrentYear().id})
                         binding.yearDropDown.setText(yearData.map { it.name }.get(index),false)
                     }
                 }
+
+                is GradesViewModel.Action.LoadPeriodGrades -> TODO()
+                is GradesViewModel.Action.LoadWeekGrades -> TODO()
+                is GradesViewModel.Action.LoadYearGrades -> TODO()
             }
         }
 

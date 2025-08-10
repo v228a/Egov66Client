@@ -1,6 +1,7 @@
 package com.vovka.egov66client.domain.grades.repo
 
 import com.vovka.egov66client.domain.grades.entity.GradeWeekEntity
+import com.vovka.egov66client.domain.grades.entity.GradesEntity
 import com.vovka.egov66client.domain.grades.entity.PeriodEntity
 import com.vovka.egov66client.domain.grades.entity.SubjectEntity
 import com.vovka.egov66client.domain.grades.entity.YearsEntity
@@ -21,25 +22,13 @@ interface GradesRepository {
 
     suspend fun getClassId(schoolYear: String) : Result<String>
 
-    suspend fun getWeekGrades(
+    suspend fun getGrades(
         periodId: String,
         subjectId: String,
         weekNumber: Int?,
         schoolYearId: String
-    ): Result<List<GradeWeekEntity>>
+    ): Result<GradesEntity>
 
-    suspend fun getYearGrades(
-        periodId: String,
-        subjectId: String,
-        weekNumber: Int?,
-        schoolYearId: String
-    ): Result<List<YearGradeEntity>>
 
-    suspend fun getPeriodGrades(
-        periodId: String,
-        subjectId: String,
-        weekNumber: Int?,
-        schoolYearId: String
-    ): Result<List<YearGradeEntity>>
 
 }
