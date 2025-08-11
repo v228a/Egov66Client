@@ -41,6 +41,7 @@ class StudentRepositoryImpl @Inject constructor(
     override suspend fun updateAuthToken(token: String) {
         studentStorageDataSource.get().updateAiss2Auth(token)
     }
+
     override suspend fun updateStudentId() {
         withContext(Dispatchers.IO) {
             val authToken = studentStorageDataSource.get().aiss2Auth.first()
@@ -62,6 +63,10 @@ class StudentRepositoryImpl @Inject constructor(
     override suspend fun logout(){
        studentStorageDataSource.get().updateAiss2Auth(null)
 
+    }
+
+    override suspend fun checkAuthToken(): Boolean {
+        return !studentStorageDataSource.get().aiss2Auth.first().isNullOrEmpty()
     }
 
 }

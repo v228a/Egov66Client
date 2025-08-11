@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:background="@drawable/period_row_background"
+    android:layout_marginTop="4dp">
+
+    <!-- Заголовок урока с датой -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:background="@drawable/period_container_background">
+
+        <TextView
+            android:id="@+id/lesson_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="?android:attr/textColorSecondary"
+            tools:text="15.12.2024" />
+
+        <TextView
+            android:id="@+id/lesson_id"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="?android:attr/textColorSecondary"
+            android:gravity="end"
+            tools:text="Урок #123" />
+
+    </LinearLayout>
+
+    <!-- Оценки за урок -->
+    <LinearLayout
+        android:id="@+id/grades_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:gravity="center_vertical">
+
+        <!-- Здесь будут динамически добавляться оценки -->
+        <TextView
+            android:id="@+id/grades_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            tools:text="5, 4, 5" />
+
+    </LinearLayout>
+
+</LinearLayout>

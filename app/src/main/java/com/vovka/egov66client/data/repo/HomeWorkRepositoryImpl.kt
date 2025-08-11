@@ -45,5 +45,18 @@ class HomeWorkRepositoryImpl @Inject constructor(
             )
         }
     }
+
+    override suspend fun setHomeworkDone(isDone: Boolean, homeworkId: String) {
+        return withContext(Dispatchers.IO){
+            homeWorkNetworkDataSource.get().setHomeworkDone(
+                Aiss2Auth = "Bearer " + studentStorageDataSource.get().aiss2Auth.first().toString(),
+                studentId = studentStorageDataSource.get().studentId.first().toString(),
+                homeworkId = homeworkId,
+                isDone = isDone
+            )
+        }
+    }
+
+
 }
 

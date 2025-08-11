@@ -36,5 +36,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageButton
+        android:id="@+id/selectCurrentDataImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:adjustViewBounds="false"
+        android:backgroundTint="#00FFFFFF"
+        android:cropToPadding="false"
+        app:layout_constraintBottom_toBottomOf="@+id/dateTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/dateTextView"
+        app:srcCompat="@drawable/ic_calendar"
+        tools:srcCompat="@drawable/ic_calendar" />
+
+    <TextView
+        android:id="@+id/noHomeWorkTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="В этот день нету домашки"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

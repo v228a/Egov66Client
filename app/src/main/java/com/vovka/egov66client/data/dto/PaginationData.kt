@@ -1,4 +1,4 @@
-package com.vovka.egov66client.data.dto.schedule
+package com.vovka.egov66client.data.dto
 
 import com.google.gson.annotations.SerializedName
 

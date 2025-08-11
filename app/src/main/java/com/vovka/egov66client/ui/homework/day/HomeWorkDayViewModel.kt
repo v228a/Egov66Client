@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vovka.egov66client.domain.homework.GetHomeWorkUseCase
+import com.vovka.egov66client.domain.homework.SetHomeWorkDoneUseCase
 import com.vovka.egov66client.domain.homework.entity.DayHomeWorkEntity
 import com.vovka.egov66client.ui.profile.ProfileViewModel
 
@@ -20,7 +21,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeWorkDayViewModel @Inject constructor(
-    private val getHomeWorkUseCase: GetHomeWorkUseCase
+    private val getHomeWorkUseCase: GetHomeWorkUseCase,
+    private val setHomeWorkDoneUseCase: SetHomeWorkDoneUseCase
 ): ViewModel() {
 
 
@@ -45,7 +47,24 @@ class HomeWorkDayViewModel @Inject constructor(
         }
     }
 
-    sealed interface Action {}
+    fun openCalendar(){
+        viewModelScope.launch {
+            _action.emit(Action.OpenCalendar)
+        }
+    }
+
+
+
+    fun updateDoneHomeWork(isDone: Boolean,homeWorkId: String){
+        viewModelScope.launch {
+            setHomeWorkDoneUseCase.invoke(isDone,homeWorkId)
+        }
+    }
+
+    sealed interface Action {
+        data object OpenCalendar : Action
+
+    }
 
     sealed interface State{
         data object Loading : State

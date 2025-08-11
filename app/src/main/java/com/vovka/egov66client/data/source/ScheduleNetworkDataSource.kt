@@ -1,8 +1,6 @@
 package com.vovka.egov66client.data.source
 
-import android.accounts.NetworkErrorException
 import com.vovka.egov66client.data.dto.schedule.ScheduleResponse
-import com.vovka.egov66client.data.dto.schedule.mockdata
 import dagger.Reusable
 import retrofit2.Retrofit
 import javax.inject.Inject

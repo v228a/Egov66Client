@@ -1,6 +1,7 @@
 package com.vovka.egov66client.ui.schedule
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -25,12 +26,10 @@ class ScheduleFragment : Fragment(R.layout.fragment_schedule) {
     }
 
     private fun initCallback() {
-        binding.scheduleViewPager.adapter = DayAdapter(requireActivity(), viewModel.getScheduleWeekUseCase,viewModel.getScheduleCurrentWeekUseCase,viewModel.logoutUseCase)
+        binding.scheduleViewPager.adapter = DayAdapter(requireActivity(),binding.scheduleViewPager, viewModel.getScheduleWeekUseCase,viewModel.getScheduleCurrentWeekUseCase,viewModel.logoutUseCase)
     }
 
-    fun setCurrentItem(position: Int) {
-        binding.scheduleViewPager.setCurrentItem(position, false)
-    }
+
 
     private fun subscribe() {
 //        viewModel.state.collectWhenStarted(this) { state ->

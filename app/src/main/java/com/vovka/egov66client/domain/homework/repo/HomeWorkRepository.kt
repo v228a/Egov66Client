@@ -7,4 +7,5 @@ import java.time.LocalDateTime
 
 interface HomeWorkRepository {
     suspend fun getHomework(date: LocalDateTime) : Result<DayHomeWorkEntity>
+    suspend fun setHomeworkDone(isDone: Boolean,homeworkId: String)
 }

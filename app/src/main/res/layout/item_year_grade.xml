@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Заголовок таблицы -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/table_header_background"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp">
+
+            <!-- Название предмета -->
+            <TextView
+                android:id="@+id/subject_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                tools:text="Математика" />
+
+            <!-- Периоды -->
+            <TextView
+                android:id="@+id/period_1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:gravity="center"
+                tools:text="1 Четв." />
+
+            <TextView
+                android:id="@+id/period_2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:gravity="center"
+                tools:text="2 Четв." />
+
+            <TextView
+                android:id="@+id/period_3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:gravity="center"
+                tools:text="3 Четв." />
+
+            <TextView
+                android:id="@+id/period_4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:gravity="center"
+                tools:text="4 Четв." />
+
+            <TextView
+                android:id="@+id/year_grade"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:gravity="center"
+                tools:text="Год" />
+
+            <TextView
+                android:id="@+id/exam_grade"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:gravity="center"
+                tools:text="Тест" />
+
+            <TextView
+                android:id="@+id/final_grade"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:gravity="center"
+                tools:text="Итог" />
+
+        </LinearLayout>
+
+        <!-- Данные оценок -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="12dp"
+            android:background="@drawable/table_row_background">
+
+            <!-- Название предмета -->
+            <TextView
+                android:id="@+id/subject_name_data"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:text="Математика" />
+
+            <!-- Оценки по периодам -->
+            <LinearLayout
+                android:id="@+id/period_1_container"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/period_1_avg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textColor="?android:attr/textColorSecondary"
+                    tools:text="4.5" />
+
+                <TextView
+                    android:id="@+id/period_1_final"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/grade_circle_background"
+                    android:padding="4dp"
+                    android:minWidth="24dp"
+                    android:gravity="center"
+                    tools:text="5" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/period_2_container"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/period_2_avg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textColor="?android:attr/textColorSecondary"
+                    tools:text="4.2" />
+
+                <TextView
+                    android:id="@+id/period_2_final"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/grade_circle_background"
+                    android:padding="4dp"
+                    android:minWidth="24dp"
+                    android:gravity="center"
+                    tools:text="4" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/period_3_container"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/period_3_avg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textColor="?android:attr/textColorSecondary"
+                    tools:text="4.8" />
+
+                <TextView
+                    android:id="@+id/period_3_final"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/grade_circle_background"
+                    android:padding="4dp"
+                    android:minWidth="24dp"
+                    android:gravity="center"
+                    tools:text="5" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/period_4_container"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/period_4_avg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textColor="?android:attr/textColorSecondary"
+                    tools:text="4.6" />
+
+                <TextView
+                    android:id="@+id/period_4_final"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/grade_circle_background"
+                    android:padding="4dp"
+                    android:minWidth="24dp"
+                    android:gravity="center"
+                    tools:text="5" />
+
+            </LinearLayout>
+
+            <!-- Годовая оценка -->
+            <TextView
+                android:id="@+id/year_grade_data"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:background="@drawable/grade_circle_background"
+                android:padding="4dp"
+                android:minWidth="24dp"
+                android:gravity="center"
+                tools:text="5" />
+
+            <!-- Экзаменационная оценка -->
+            <TextView
+                android:id="@+id/exam_grade_data"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:background="@drawable/grade_circle_background"
+                android:padding="4dp"
+                android:minWidth="24dp"
+                android:gravity="center"
+                tools:text="5" />
+
+            <!-- Итоговая оценка -->
+            <TextView
+                android:id="@+id/final_grade_data"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:background="@drawable/grade_circle_background"
+                android:padding="4dp"
+                android:minWidth="24dp"
+                android:gravity="center"
+                tools:text="5" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
