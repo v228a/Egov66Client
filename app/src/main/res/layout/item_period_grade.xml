@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Заголовок с информацией о периоде -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/table_header_background"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp">
+
+            <!-- Название предмета -->
+            <TextView
+                android:id="@+id/subject_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                tools:text="Математика" />
+
+            <!-- Средняя оценка -->
+            <TextView
+                android:id="@+id/average_grade"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:gravity="center"
+                tools:text="Средняя" />
+
+            <!-- Средневзвешенная оценка -->
+            <TextView
+                android:id="@+id/average_weighted_grade"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:gravity="center"
+                tools:text="Ср. взвеш." />
+
+            <!-- Итоговая оценка -->
+            <TextView
+                android:id="@+id/total_grade"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:gravity="center"
+                tools:text="Итог" />
+
+        </LinearLayout>
+
+        <!-- Данные оценок -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="12dp"
+            android:background="@drawable/table_row_background">
+
+            <!-- Название предмета -->
+            <TextView
+                android:id="@+id/subject_name_data"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:text="Математика" />
+
+            <!-- Средняя оценка -->
+            <TextView
+                android:id="@+id/average_grade_data"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:background="@drawable/grade_circle_background"
+                android:padding="4dp"
+                android:minWidth="24dp"
+                android:gravity="center"
+                tools:text="4.5" />
+
+            <!-- Средневзвешенная оценка -->
+            <TextView
+                android:id="@+id/average_weighted_grade_data"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:background="@drawable/grade_circle_background"
+                android:padding="4dp"
+                android:minWidth="24dp"
+                android:gravity="center"
+                tools:text="4.3" />
+
+            <!-- Итоговая оценка -->
+            <TextView
+                android:id="@+id/total_grade_data"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:background="@drawable/grade_circle_background"
+                android:padding="4dp"
+                android:minWidth="24dp"
+                android:gravity="center"
+                tools:text="5" />
+
+        </LinearLayout>
+
+        <!-- Детализация оценок по урокам -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/lessons_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:nestedScrollingEnabled="false"
+            tools:listitem="@layout/item_period_lesson_grade" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

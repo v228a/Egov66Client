@@ -113,24 +113,32 @@ class GradesViewModel @Inject constructor(
                 schoolYearId = yearId
             ).fold(
                 onSuccess = {
+                    Log.d("GradesViewModel", "Получены данные: weekGrades=${it.weekGrades?.size}, yearGrades=${it.yearGrades?.size}, periodGrades=${it.periodGrades?.size}")
                     when {
                         it.weekGrades != null -> {
+                            Log.d("GradesViewModel", "Загружаем недельные оценки: ${it.weekGrades.size}")
                             _action.emit(Action.LoadWeekGrades(it.weekGrades))
                         }
                         it.yearGrades != null -> {
+                            Log.d("GradesViewModel", "Загружаем годовые оценки: ${it.yearGrades.size}")
                             _action.emit(Action.LoadYearGrades(it.yearGrades))
                         }
                         it.periodGrades != null -> {
+                            Log.d("GradesViewModel", "Загружаем периодические оценки: ${it.periodGrades.size}")
                             _action.emit(Action.LoadPeriodGrades(it.periodGrades))
                         }
                         else -> {
                             // Все три null — ошибка
+                            Log.d("GradesViewModel", "Все таблицы null")
                             error("Все таблицы null")
                         }
                     }
 
                 },
-                onFailure = { Log.d("GradesViewModel",it.localizedMessage) }
+                onFailure = { 
+                    Log.d("GradesViewModel", "Ошибка при загрузке оценок: ${it.localizedMessage}")
+                    Log.d("GradesViewModel", "Stack trace: ${it.stackTraceToString()}")
+                }
 
             )
         }

@@ -55,15 +55,25 @@ class GradesFragment : Fragment(com.vovka.egov66client.R.layout.fragment_grades)
         val periodText = binding.periodDropDown.text.toString()
         val subjectText = binding.subjectDropDown.text.toString()
         
+        Log.d("GradesFragment", "Проверяем поля: yearText='$yearText', periodText='$periodText', subjectText='$subjectText'")
+        
         if (yearText.isNotEmpty() && periodText.isNotEmpty() && subjectText.isNotEmpty()) {
+            val subjectId = viewModel.getSubjectIdByName(subjectText)
+            val periodId = viewModel.getPeriodIdByName(periodText)
+            val yearId = viewModel.getYearIdByName(yearText)
+            
+            Log.d("GradesFragment", "ID: subjectId='$subjectId', periodId='$periodId', yearId='$yearId'")
+            
             viewModel.loadGrades(
-                subjectId = viewModel.getSubjectIdByName(subjectText),
-                periodId = viewModel.getPeriodIdByName(periodText),
-                yearId = viewModel.getYearIdByName(yearText),
+                subjectId = subjectId,
+                periodId = periodId,
+                yearId = yearId,
                 weekNumber = null
             )
+        } else {
+            Log.d("GradesFragment", "Не все поля заполнены")
         }
-        Log.d("GradesFragmnet","Я работаю")
+        Log.d("GradesFragment","Я работаю")
     }
 
     private fun subscribe() {
@@ -149,8 +159,14 @@ class GradesFragment : Fragment(com.vovka.egov66client.R.layout.fragment_grades)
 
                 is GradesViewModel.Action.LoadPeriodGrades -> {
                     Log.d("LoadPeriodGrades", "Загружены периодические оценки: ${action.periodData.size}")
+                    Log.d("LoadPeriodGrades", "Данные: ${action.periodData}")
+                    if (action.periodData.isEmpty()) {
+                        Log.d("LoadPeriodGrades", "Нет данных для отображения")
+                        // Можно добавить отображение сообщения "Нет данных"
+                    }
                     val adapter = PeriodGradesAdapter(action.periodData)
                     binding.gradesRecycler.adapter = adapter
+                    Log.d("LoadPeriodGrades", "Адаптер установлен")
                 }
                 is GradesViewModel.Action.LoadWeekGrades -> {
                     Log.d("LoadWeekGrades", "Загружены недельные оценки: ${action.weekData.size}")
