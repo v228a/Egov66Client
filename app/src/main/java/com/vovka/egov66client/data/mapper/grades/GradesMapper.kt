@@ -1,15 +1,14 @@
 package com.vovka.egov66client.data.mapper.grades
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import com.vovka.egov66client.data.dto.grades.GradesResponse
-import com.vovka.egov66client.domain.grades.entity.GradeWeekEntity
+import com.vovka.egov66client.domain.grades.entity.week.GradeWeekEntity
+import com.vovka.egov66client.domain.grades.entity.week.WeekGradesListEntity
+import com.vovka.egov66client.domain.grades.entity.week.PageWeekDataEntity
 import com.vovka.egov66client.domain.grades.entity.GradesEntity
 import com.vovka.egov66client.domain.grades.entity.period.PeriodGradeEntity
 import com.vovka.egov66client.domain.grades.entity.period.PeriodLessonGradeEntity
-import com.vovka.egov66client.domain.grades.entity.year.YearGradeEntity
-import java.time.LocalDateTime
 import java.time.ZoneId
 import javax.inject.Inject
 
@@ -22,7 +21,7 @@ class GradesMapper @Inject constructor(
             when {
                 model.weekGradesTable != null -> {
                     val weekTable = model.weekGradesTable
-                    val weekGrades = weekTable.days.flatMap { day ->
+                    val weekGradesList = weekTable.days.flatMap { day ->
                         day.lessons.map { lesson ->
                             val grade = lesson.grades.firstOrNull()?.firstOrNull() ?: ""
                             val time = String.format(
@@ -30,7 +29,7 @@ class GradesMapper @Inject constructor(
                                 lesson.beginHour, lesson.beginMinute,
                                 lesson.endHour, lesson.endMinute
                             )
-                            GradeWeekEntity(
+                            WeekGradesListEntity(
                                 id = lesson.id,
                                 grade = grade,
                                 lesson = lesson.name,
@@ -39,6 +38,22 @@ class GradesMapper @Inject constructor(
                             )
                         }
                     }
+
+                    val pagination = PageWeekDataEntity(
+                        pageSize = weekTable.pagination.pageSize,
+                        pageNumber = weekTable.pagination.pageNumber,
+                        totalCount = weekTable.pagination.totalCount,
+                        pageActionLink = weekTable.pagination.pageActionLink,
+                        totalPages = weekTable.pagination.totalPages,
+                        hasPreviousPage = weekTable.pagination.hasPreviousPage,
+                        hasNextPage = weekTable.pagination.hasNextPage,
+                        pageNumberOutOfRange = weekTable.pagination.pageNumberOutOfRange
+                    )
+
+                    val weekGrades = GradeWeekEntity(
+                        grades = weekGradesList,
+                        pagination = pagination
+                    )
 
                     GradesEntity(
                         periodGrades = null,

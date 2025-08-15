@@ -1,6 +1,5 @@
 package com.vovka.egov66client.ui.grades
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vovka.egov66client.domain.grades.GetCurrentYearUseCase
@@ -8,7 +7,7 @@ import com.vovka.egov66client.domain.grades.GetGradesUseCase
 import com.vovka.egov66client.domain.grades.GetPeriodUseCase
 import com.vovka.egov66client.domain.grades.GetSchoolYearsUseCase
 import com.vovka.egov66client.domain.grades.GetSubjectsUseCase
-import com.vovka.egov66client.domain.grades.entity.GradeWeekEntity
+import com.vovka.egov66client.domain.grades.entity.week.WeekGradesListEntity
 import com.vovka.egov66client.domain.grades.entity.PeriodEntity
 import com.vovka.egov66client.domain.grades.entity.SubjectEntity
 import com.vovka.egov66client.domain.grades.entity.YearsEntity
@@ -102,10 +101,9 @@ class GradesViewModel @Inject constructor(
         weekNumber: Int?
     ) {
         viewModelScope.launch {
-            Log.d("subjectId",subjectId)
-            Log.d("periodID",periodId)
-            Log.d("yearID",yearId)
-            Log.d("weekNumber",weekNumber.toString())
+            // Устанавливаем состояние загрузки
+            _state.value = State.LoadingGrades
+            
             getGradesUseCase.invoke(
                 periodId = periodId,
                 subjectId = subjectId,
@@ -113,31 +111,26 @@ class GradesViewModel @Inject constructor(
                 schoolYearId = yearId
             ).fold(
                 onSuccess = {
-                    Log.d("GradesViewModel", "Получены данные: weekGrades=${it.weekGrades?.size}, yearGrades=${it.yearGrades?.size}, periodGrades=${it.periodGrades?.size}")
                     when {
                         it.weekGrades != null -> {
-                            Log.d("GradesViewModel", "Загружаем недельные оценки: ${it.weekGrades.size}")
-                            _action.emit(Action.LoadWeekGrades(it.weekGrades))
+                            val weekGradesList = it.weekGrades?.grades ?: emptyList()
+                            _state.value = State.LoadWeekGrades(weekGradesList)
                         }
                         it.yearGrades != null -> {
-                            Log.d("GradesViewModel", "Загружаем годовые оценки: ${it.yearGrades.size}")
-                            _action.emit(Action.LoadYearGrades(it.yearGrades))
+                            _state.value = State.LoadYearGrades(it.yearGrades)
                         }
                         it.periodGrades != null -> {
-                            Log.d("GradesViewModel", "Загружаем периодические оценки: ${it.periodGrades.size}")
-                            _action.emit(Action.LoadPeriodGrades(it.periodGrades))
+                            _state.value = State.LoadPeriodGrades(it.periodGrades)
                         }
                         else -> {
                             // Все три null — ошибка
-                            Log.d("GradesViewModel", "Все таблицы null")
-                            error("Все таблицы null")
+                            _state.value = State.Error("Все таблицы null")
                         }
                     }
 
                 },
                 onFailure = { 
-                    Log.d("GradesViewModel", "Ошибка при загрузке оценок: ${it.localizedMessage}")
-                    Log.d("GradesViewModel", "Stack trace: ${it.stackTraceToString()}")
+                    _state.value = State.Error(it.localizedMessage ?: "Неизвестная ошибка")
                 }
 
             )
@@ -153,13 +146,14 @@ class GradesViewModel @Inject constructor(
     //Периодичный - полугодие, четверть
     sealed interface State {
         data object LoadingSettings : State
-        data object LoadingGrades: State
+        data object LoadingGrades : State
+        data class LoadYearGrades(val yearData: List<YearGradeEntity>) : State
+        data class LoadPeriodGrades(val periodData: List<PeriodGradeEntity>) : State
+        data class LoadWeekGrades(val weekData: List<WeekGradesListEntity>) : State
+        data class Error(val message: String) : State
     }
 
     sealed interface Action {
-        data class LoadYearGrades(val yearData: List<YearGradeEntity>) : Action
-        data class LoadPeriodGrades(val periodData: List<PeriodGradeEntity>) : Action
-        data class LoadWeekGrades(val weekData: List<GradeWeekEntity>) : Action
         data class UpdateSubject(val subjectData: List<SubjectEntity>?): Action
         data class UpdateYear(val yearData: List<YearsEntity>?): Action
         data class UpdatePeriod(val periodData: List<PeriodEntity>?): Action

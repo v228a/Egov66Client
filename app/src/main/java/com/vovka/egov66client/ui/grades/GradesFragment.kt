@@ -4,21 +4,17 @@ import android.R
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.vovka.egov66client.databinding.FragmentGradesBinding
-import com.vovka.egov66client.domain.grades.entity.GradeWeekEntity
-import com.vovka.egov66client.domain.grades.entity.year.YearGradeEntity
 import com.vovka.egov66client.ui.grades.adapters.GradesWeekAdapter
 import com.vovka.egov66client.ui.grades.adapters.PeriodGradesAdapter
-import com.vovka.egov66client.ui.grades.adapters.YearGradesAdapter
-import com.vovka.egov66client.ui.grades.adapters.YearGradesCompactAdapter
 import com.vovka.egov66client.ui.grades.adapters.YearGradesSimpleAdapter
 import com.vovka.egov66client.utils.collectWhenStarted
+import com.vovka.egov66client.utils.visibleOrGone
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -55,14 +51,10 @@ class GradesFragment : Fragment(com.vovka.egov66client.R.layout.fragment_grades)
         val periodText = binding.periodDropDown.text.toString()
         val subjectText = binding.subjectDropDown.text.toString()
         
-        Log.d("GradesFragment", "Проверяем поля: yearText='$yearText', periodText='$periodText', subjectText='$subjectText'")
-        
         if (yearText.isNotEmpty() && periodText.isNotEmpty() && subjectText.isNotEmpty()) {
             val subjectId = viewModel.getSubjectIdByName(subjectText)
             val periodId = viewModel.getPeriodIdByName(periodText)
             val yearId = viewModel.getYearIdByName(yearText)
-            
-            Log.d("GradesFragment", "ID: subjectId='$subjectId', periodId='$periodId', yearId='$yearId'")
             
             viewModel.loadGrades(
                 subjectId = subjectId,
@@ -70,10 +62,7 @@ class GradesFragment : Fragment(com.vovka.egov66client.R.layout.fragment_grades)
                 yearId = yearId,
                 weekNumber = null
             )
-        } else {
-            Log.d("GradesFragment", "Не все поля заполнены")
         }
-        Log.d("GradesFragment","Я работаю")
     }
 
     private fun subscribe() {
@@ -82,7 +71,6 @@ class GradesFragment : Fragment(com.vovka.egov66client.R.layout.fragment_grades)
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                Log.d("yearDropDown", "Текст изменён: $s")
                 viewModel.updatePeriodAndSubject(s.toString())
                 loadGradesIfAllFieldsFilled()
             }
@@ -95,7 +83,6 @@ class GradesFragment : Fragment(com.vovka.egov66client.R.layout.fragment_grades)
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                Log.d("periodDropDown", "Текст изменён: $s")
                 loadGradesIfAllFieldsFilled()
             }
 
@@ -107,13 +94,13 @@ class GradesFragment : Fragment(com.vovka.egov66client.R.layout.fragment_grades)
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                Log.d("subjectDropDown", "Текст изменён: $s")
                 loadGradesIfAllFieldsFilled()
             }
 
             override fun afterTextChanged(s: Editable?) {}
         })
 
+        // Подписка на action для обновления настроек
         viewModel.action.collectWhenStarted(this) { action ->
             when(action){
                 is GradesViewModel.Action.UpdatePeriod -> {
@@ -125,13 +112,9 @@ class GradesFragment : Fragment(com.vovka.egov66client.R.layout.fragment_grades)
                             (periodData.map { it.name })
                         ))
                         binding.periodDropDown.setText(periodData.map { it.name }.get(0),false)
-                    }else{
-                        Log.d("UpdatePeriod","PeriodData in null")
                     }
                 }
                 is GradesViewModel.Action.UpdateSubject -> {
-                    Log.d("UpdateSubject","I am working")
-                    Log.d("UpdateSubject",action.subjectData!!.isEmpty().toString())
                     val subjectData = action.subjectData
                     if (!subjectData.isNullOrEmpty()){
                         binding.subjectDropDown.setAdapter(ArrayAdapter(
@@ -144,7 +127,6 @@ class GradesFragment : Fragment(com.vovka.egov66client.R.layout.fragment_grades)
                 }
                 
                 is GradesViewModel.Action.UpdateYear -> {
-                    Log.d("UpdateYear","I am working")
                     val yearData = action.yearData
                     if (!yearData.isNullOrEmpty()){
                         binding.yearDropDown.setAdapter(ArrayAdapter(
@@ -156,32 +138,50 @@ class GradesFragment : Fragment(com.vovka.egov66client.R.layout.fragment_grades)
                         binding.yearDropDown.setText(yearData.map { it.name }.get(index),false)
                     }
                 }
-
-                is GradesViewModel.Action.LoadPeriodGrades -> {
-                    Log.d("LoadPeriodGrades", "Загружены периодические оценки: ${action.periodData.size}")
-                    Log.d("LoadPeriodGrades", "Данные: ${action.periodData}")
-                    if (action.periodData.isEmpty()) {
-                        Log.d("LoadPeriodGrades", "Нет данных для отображения")
-                        // Можно добавить отображение сообщения "Нет данных"
-                    }
-                    val adapter = PeriodGradesAdapter(action.periodData)
-                    binding.gradesRecycler.adapter = adapter
-                    Log.d("LoadPeriodGrades", "Адаптер установлен")
-                }
-                is GradesViewModel.Action.LoadWeekGrades -> {
-                    Log.d("LoadWeekGrades", "Загружены недельные оценки: ${action.weekData.size}")
-                    val adapter = GradesWeekAdapter(action.weekData)
-                    binding.gradesRecycler.adapter = adapter
-                }
-                is GradesViewModel.Action.LoadYearGrades -> {
-                    Log.d("LoadYearGrades", "Загружены годовые оценки: ${action.yearData.size}")
-                    val adapter = YearGradesSimpleAdapter(action.yearData)
-                    binding.gradesRecycler.adapter = adapter
-                }
             }
         }
 
+        // Подписка на state для загрузки оценок
+        viewModel.state.collectWhenStarted(this) { state ->
+            when (state) {
+                is GradesViewModel.State.LoadingSettings -> {
+                    // Показываем индикатор загрузки настроек если нужно
+                }
+                is GradesViewModel.State.LoadingGrades -> {
+                    // Показываем индикатор загрузки оценок
+                    // Можно добавить ProgressBar или другой индикатор
+                }
+                is GradesViewModel.State.LoadPeriodGrades -> {
+                    binding.numberWeekSelector.visibleOrGone(false)
+                    if (state.periodData.isEmpty()) {
+                        // TODO добавить отображение сообщения "Нет данных"
+                    }
+                    val adapter = PeriodGradesAdapter(state.periodData)
+                    binding.gradesRecycler.adapter = adapter
+                }
+                is GradesViewModel.State.LoadWeekGrades -> {
+                    binding.numberWeekSelector.visibleOrGone(true)
+                    val adapter = GradesWeekAdapter(state.weekData)
+                    if (state.weekData.isEmpty()) {
+                        // TODO добавить отображение сообщения "Нет данных"
+                    }
+                    binding.gradesRecycler.adapter = adapter
+                }
+                is GradesViewModel.State.LoadYearGrades -> {
+                    binding.numberWeekSelector.visibleOrGone(true)
+                    val adapter = YearGradesSimpleAdapter(state.yearData)
+                    if (state.yearData.isEmpty()) {
+                        // TODO добавить отображение сообщения "Нет данных"
+                    }
+                    binding.gradesRecycler.adapter = adapter
+                }
+                is GradesViewModel.State.Error -> {
+                    // Обработка ошибки
+                    // TODO добавить отображение ошибки пользователю
+                }
+            }
         }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

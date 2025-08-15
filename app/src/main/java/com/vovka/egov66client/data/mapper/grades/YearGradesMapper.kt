@@ -1,7 +1,6 @@
 package com.vovka.egov66client.data.mapper.grades
 
 import com.vovka.egov66client.data.dto.grades.GradesResponse
-import com.vovka.egov66client.domain.grades.entity.GradeWeekEntity
 import com.vovka.egov66client.domain.grades.entity.year.YearGradeEntity
 import com.vovka.egov66client.domain.grades.entity.year.YearPeriodGradeEntity
 import javax.inject.Inject

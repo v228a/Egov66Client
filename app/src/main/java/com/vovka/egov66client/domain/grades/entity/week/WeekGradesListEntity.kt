@@ -1,6 +1,6 @@
-package com.vovka.egov66client.domain.grades.entity
+package com.vovka.egov66client.domain.grades.entity.week
 
-class GradeWeekEntity (
+class WeekGradesListEntity(
     val id: String,
     val grade: String,
     val lesson: String,
