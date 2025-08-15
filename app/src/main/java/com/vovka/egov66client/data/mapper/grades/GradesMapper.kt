@@ -1,6 +1,7 @@
 package com.vovka.egov66client.data.mapper.grades
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.vovka.egov66client.data.dto.grades.GradesResponse
 import com.vovka.egov66client.domain.grades.entity.GradeWeekEntity
@@ -17,11 +18,9 @@ class GradesMapper @Inject constructor(
 ) {
     @RequiresApi(Build.VERSION_CODES.O)//TODO fix
     operator fun invoke(model: GradesResponse): Result<GradesEntity> {
-        android.util.Log.d("GradesMapper", "Обрабатываем ответ: weekGradesTable=${model.weekGradesTable != null}, yearGradesTable=${model.yearGradesTable != null}, periodGradesTable=${model.periodGradesTable != null}")
         return runCatching {
             when {
                 model.weekGradesTable != null -> {
-                    android.util.Log.d("GradesMapper", "Обрабатываем недельные оценки")
                     val weekTable = model.weekGradesTable
                     val weekGrades = weekTable.days.flatMap { day ->
                         day.lessons.map { lesson ->
@@ -49,9 +48,7 @@ class GradesMapper @Inject constructor(
                 }
 
                 model.yearGradesTable != null -> {
-                    android.util.Log.d("GradesMapper", "Обрабатываем годовые оценки")
                     val yearGrades = yearGradesMapper.invoke(model).getOrNull() ?: emptyList()
-                    
                     GradesEntity(
                         periodGrades = null,
                         yearGrades = yearGrades,
@@ -60,14 +57,13 @@ class GradesMapper @Inject constructor(
                 }
 
                 model.periodGradesTable != null && model.periodGradesTable.disciplines.isNotEmpty() -> {
-                    android.util.Log.d("GradesMapper", "Обрабатываем периодические оценки: ${model.periodGradesTable.disciplines.size} дисциплин")
                     val periodTable = model.periodGradesTable
                     val periodGrades = periodTable.disciplines.map { discipline ->
                         PeriodGradeEntity(
                             name = discipline.name,
                             averageGrade = discipline.averageGrade,
                             averageWeightedGrade = discipline.averageWeightedGrade,
-                            totalGrade = discipline.totalGrade,
+                            totalGrade = discipline.totalGrade ?: "—",
                             grades = discipline.grades.map { grade ->
                                 PeriodLessonGradeEntity(
                                     presence = grade.presence,
@@ -89,7 +85,6 @@ class GradesMapper @Inject constructor(
                 }
                 
                 model.periodGradesTable != null && model.periodGradesTable.disciplines.isEmpty() -> {
-                    android.util.Log.d("GradesMapper", "Периодические оценки присутствуют, но дисциплины пустые")
                     GradesEntity(
                         periodGrades = emptyList(),
                         yearGrades = null,
@@ -98,8 +93,6 @@ class GradesMapper @Inject constructor(
                 }
 
                 else -> {
-                    android.util.Log.d("GradesMapper", "Все таблицы null или пустые")
-                    android.util.Log.d("GradesMapper", "weekGradesTable=${model.weekGradesTable}, yearGradesTable=${model.yearGradesTable}, periodGradesTable=${model.periodGradesTable}")
                     error("Все таблицы null")
                 }
             }

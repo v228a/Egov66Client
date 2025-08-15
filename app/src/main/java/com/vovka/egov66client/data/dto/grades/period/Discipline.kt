@@ -14,7 +14,7 @@ data class Discipline(
     val averageWeightedGrade: Double?,
 
     @SerializedName("totalGrade")
-    val totalGrade: String,
+    val totalGrade: String?,
 
     @SerializedName("grades")
     val grades: List<Grade>
