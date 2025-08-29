@@ -1,11 +1,9 @@
 package com.vovka.egov66client.domain.grades.repo
 
-import com.vovka.egov66client.domain.grades.entity.GradeWeekEntity
 import com.vovka.egov66client.domain.grades.entity.GradesEntity
 import com.vovka.egov66client.domain.grades.entity.PeriodEntity
 import com.vovka.egov66client.domain.grades.entity.SubjectEntity
 import com.vovka.egov66client.domain.grades.entity.YearsEntity
-import com.vovka.egov66client.domain.grades.entity.year.YearGradeEntity
 
 interface GradesRepository {
     suspend fun getYears() : Result<List<YearsEntity>>

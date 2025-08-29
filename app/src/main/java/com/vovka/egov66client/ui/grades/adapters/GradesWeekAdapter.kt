@@ -6,10 +6,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.vovka.egov66client.databinding.ItemGradeWeekBinding
-import com.vovka.egov66client.domain.grades.entity.GradeWeekEntity
+import com.vovka.egov66client.domain.grades.entity.week.WeekGradesListEntity
 
 class GradesWeekAdapter(
-    private val gradesList: List<GradeWeekEntity>,
+    private val gradesList: List<WeekGradesListEntity>,
 ) : RecyclerView.Adapter<GradesWeekAdapter.GradeViewHolder>() {
 
     private val gradeColors = mapOf(

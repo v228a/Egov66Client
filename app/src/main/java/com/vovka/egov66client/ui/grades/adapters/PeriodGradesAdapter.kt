@@ -83,11 +83,16 @@ class PeriodGradesAdapter(
         }
 
         // Устанавливаем итоговую оценку
-        binding.totalGradeData.text = currentItem.totalGrade
-        binding.totalGradeData.setBackgroundColor(
-            currentItem.totalGrade.toIntOrNull()?.let { gradeColors[it] } 
-                ?: Color.parseColor("#6200EE")
-        )
+        if (currentItem.totalGrade != null) {
+            binding.totalGradeData.text = currentItem.totalGrade
+            binding.totalGradeData.setBackgroundColor(
+                currentItem.totalGrade.toIntOrNull()?.let { gradeColors[it] } 
+                    ?: Color.parseColor("#6200EE")
+            )
+        } else {
+            binding.totalGradeData.text = "—"
+            binding.totalGradeData.setBackgroundColor(Color.parseColor("#6200EE"))
+        }
 
         // Настраиваем RecyclerView для уроков
         setupLessonsRecyclerView(binding, currentItem.grades)
