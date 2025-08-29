@@ -4,6 +4,7 @@ import android.R
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
@@ -161,8 +162,37 @@ class GradesFragment : Fragment(com.vovka.egov66client.R.layout.fragment_grades)
                 }
                 is GradesViewModel.State.LoadWeekGrades -> {
                     binding.numberWeekSelector.visibleOrGone(true)
-                    val adapter = GradesWeekAdapter(state.weekData)
-                    if (state.weekData.isEmpty()) {
+                    val adapter = GradesWeekAdapter(state.weekData.grades)
+                    val pagination = state.weekData.pagination
+
+
+                    binding.ivNext.visibleOrGone(pagination.hasNextPage)
+                    binding.ivPrev.visibleOrGone(pagination.hasPreviousPage)
+                    binding.tvWeek.text = pagination.pageNumber.toString()
+
+                    binding.ivPrev.setOnClickListener {
+                        viewModel.loadGrades(
+                            subjectId = viewModel.cachedSubjects!!.find { it.name == binding.subjectDropDown.text.toString() }!!.id,
+                            periodId = viewModel.cachedPeriods!!.find { it.name == binding.periodDropDown.text.toString() }!!.id,
+                            yearId = viewModel.cachedYears!!.find { it.name == binding.yearDropDown.text.toString() }!!.id,
+                            weekNumber = pagination.pageNumber-1
+                        )
+                    }
+
+                    binding.ivNext.setOnClickListener {
+                        viewModel.loadGrades(
+                            subjectId = viewModel.cachedSubjects!!.find { it.name == binding.subjectDropDown.text.toString() }!!.id,
+                            periodId = viewModel.cachedPeriods!!.find { it.name == binding.periodDropDown.text.toString() }!!.id,
+                            yearId = viewModel.cachedYears!!.find { it.name == binding.yearDropDown.text.toString() }!!.id,
+                            weekNumber = pagination.pageNumber+1
+                        )
+                    }
+
+
+
+
+
+                    if (state.weekData.grades.isEmpty()) {
                         // TODO добавить отображение сообщения "Нет данных"
                     }
                     binding.gradesRecycler.adapter = adapter

@@ -12,6 +12,7 @@ import com.vovka.egov66client.domain.grades.entity.PeriodEntity
 import com.vovka.egov66client.domain.grades.entity.SubjectEntity
 import com.vovka.egov66client.domain.grades.entity.YearsEntity
 import com.vovka.egov66client.domain.grades.entity.period.PeriodGradeEntity
+import com.vovka.egov66client.domain.grades.entity.week.GradeWeekEntity
 import com.vovka.egov66client.domain.grades.entity.year.YearGradeEntity
 import com.vovka.egov66client.utils.MutablePublishFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,9 +43,9 @@ class GradesViewModel @Inject constructor(
     val state = _state.asStateFlow()
 
     // Кэш для хранения данных
-    private var cachedSubjects: List<SubjectEntity>? = null
-    private var cachedPeriods: List<PeriodEntity>? = null
-    private var cachedYears: List<YearsEntity>? = null
+    public var cachedSubjects: List<SubjectEntity>? = null
+    public var cachedPeriods: List<PeriodEntity>? = null
+    public var cachedYears: List<YearsEntity>? = null
 
     //Используется на холодную
     fun loadAllSettings(){
@@ -94,6 +95,7 @@ class GradesViewModel @Inject constructor(
         return cachedYears?.find { it.name == name }?.id ?: ""
     }
 
+
     fun loadGrades(
         subjectId: String,
         periodId: String,
@@ -113,8 +115,7 @@ class GradesViewModel @Inject constructor(
                 onSuccess = {
                     when {
                         it.weekGrades != null -> {
-                            val weekGradesList = it.weekGrades?.grades ?: emptyList()
-                            _state.value = State.LoadWeekGrades(weekGradesList)
+                            _state.value = State.LoadWeekGrades(it.weekGrades)
                         }
                         it.yearGrades != null -> {
                             _state.value = State.LoadYearGrades(it.yearGrades)
@@ -149,7 +150,7 @@ class GradesViewModel @Inject constructor(
         data object LoadingGrades : State
         data class LoadYearGrades(val yearData: List<YearGradeEntity>) : State
         data class LoadPeriodGrades(val periodData: List<PeriodGradeEntity>) : State
-        data class LoadWeekGrades(val weekData: List<WeekGradesListEntity>) : State
+        data class LoadWeekGrades(val weekData: GradeWeekEntity) : State
         data class Error(val message: String) : State
     }
 
