@@ -3,18 +3,12 @@ package com.vovka.egov66client.ui.homework.day
 
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.vovka.egov66client.R
 import com.vovka.egov66client.databinding.FragmentHomeWorkDayBinding
-import com.vovka.egov66client.databinding.FragmentLoginBinding
-import com.vovka.egov66client.domain.schedule.entity.DayScheduleEntity
-import com.vovka.egov66client.ui.homework.HomeworkViewModel
-import com.vovka.egov66client.ui.profile.ProfileViewModel
-import com.vovka.egov66client.ui.schedule.day.DayFragment
 import com.vovka.egov66client.utils.collectWhenStarted
 import com.vovka.egov66client.utils.visibleOrGone
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,6 +18,8 @@ import java.time.ZoneOffset
 import java.util.Date
 import java.util.Locale
 import kotlin.getValue
+
+
 
 @AndroidEntryPoint
 class HomeWorkDayFragment : Fragment(R.layout.fragment_home_work_day) {
