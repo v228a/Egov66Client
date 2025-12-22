@@ -27,6 +27,7 @@ class LessonAdapter : ListAdapter<LessonEntity, LessonAdapter.LessonViewHolder>(
         private val binding: ItemLessonBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
+
         fun bind(lesson: LessonEntity) {
             binding.numberTextView.text = (adapterPosition+1).toString()
             binding.timeTextView.text = lesson.time

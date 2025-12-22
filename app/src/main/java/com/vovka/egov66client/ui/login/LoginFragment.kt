@@ -1,27 +1,20 @@
 package com.vovka.egov66client.ui.login
 
 import android.graphics.Bitmap
-import androidx.fragment.app.viewModels
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.vovka.egov66client.R
 import com.vovka.egov66client.databinding.FragmentLoginBinding
-import com.vovka.egov66client.databinding.FragmentProfileBinding
-import com.vovka.egov66client.ui.profile.ProfileViewModel
 import com.vovka.egov66client.utils.collectWhenStarted
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.text.split
 
 @AndroidEntryPoint
 class LoginFragment : Fragment(R.layout.fragment_login) {
@@ -45,12 +38,14 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         //TODO Костыль
         requireActivity().findViewById<BottomNavigationView>(R.id.nav_view).visibility = View.GONE
         requireActivity().actionBar?.hide()
+
         binding.webview.settings.apply {
             javaScriptEnabled = true
             domStorageEnabled = true
             setSupportZoom(true)
             builtInZoomControls = true
             displayZoomControls = false
+            userAgentString = "Mozilla/5.0 (X11; U; Linux i686; ru-RU; rv:1.9.0.4) Gecko/20100101 Firefox/4.0"
         }
 
         binding.webview.webViewClient = object : WebViewClient() {
