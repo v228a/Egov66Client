@@ -17,6 +17,9 @@ import com.vovka.egov66client.ui.profile.ProfileViewModel
 import com.vovka.egov66client.ui.schedule.day.adapter.LessonAdapter
 import com.vovka.egov66client.utils.collectWhenStarted
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @AndroidEntryPoint
 class DayFragment : Fragment(R.layout.fragment_day) {
@@ -58,6 +61,13 @@ class DayFragment : Fragment(R.layout.fragment_day) {
                 binding.exceptionTextView.text = "Сегодня уроков нет"
             }
             else{
+                val inputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+                val outputFormatter = DateTimeFormatter.ofPattern("d MMMM", Locale("ru"))
+
+                binding.dateTextView.text = LocalDate.parse(daySchedule.date, inputFormatter).format(outputFormatter)
+
+
+
                 lessonAdapter = LessonAdapter()
                 binding.scheduleRecyclerView.apply {
                     layoutManager = LinearLayoutManager(context)
