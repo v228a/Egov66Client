@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "com.vovka.egov66client"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.vovka.egov66client"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 4
         versionName = "0.1.3"
 
@@ -45,6 +45,7 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.51.1")
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.activity)
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
 
     //GSON

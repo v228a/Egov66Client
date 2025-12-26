@@ -67,6 +67,9 @@ class DayFragment : Fragment(R.layout.fragment_day) {
                 binding.dateTextView.text = LocalDate.parse(daySchedule.date, inputFormatter).format(outputFormatter)
 
 
+                binding.dataYearTextView.text = daySchedule.date.split('.').last()
+
+
 
                 lessonAdapter = LessonAdapter()
                 binding.scheduleRecyclerView.apply {
