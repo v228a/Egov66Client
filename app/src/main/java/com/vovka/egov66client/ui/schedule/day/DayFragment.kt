@@ -68,6 +68,7 @@ class DayFragment : Fragment(R.layout.fragment_day) {
 
 
                 binding.dataYearTextView.text = daySchedule.date.split('.').last()
+                binding.dayNameTextView.text = LocalDate.parse(daySchedule.date,DateTimeFormatter.ofPattern("dd.MM.yyyy")).format(DateTimeFormatter.ofPattern("EEEE", Locale("ru"))).replaceFirstChar { it.uppercase() }
 
 
 

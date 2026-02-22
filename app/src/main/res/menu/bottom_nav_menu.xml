@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android">
-
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_home_black_24dp"
+        android:icon="@drawable/ic_navbar_diary"
         android:title="Расписание" />
 
     <item
         android:id="@+id/navigation_grades"
-        android:icon="@drawable/ic_ratings"
+        android:icon="@drawable/ic_navbar_ratings"
         android:title="Оценки" />
 
     <item
         android:id="@+id/navigation_homework"
-        android:icon="@drawable/ic_done"
+        android:icon="@drawable/ic_navbar_homework"
         android:title="Домашка" />
     <item
         android:id="@+id/navigation_profile"
-        android:icon="@drawable/ic_person"
+        android:icon="@drawable/ic_navbar_profile"
         android:title="Профиль" />
-
 </menu>
